@@ -24,10 +24,12 @@
             <RadioButton
                 android:id="@+id/radio_option1"
                 android:layout_width="wrap_content"
+                android:fontFamily="@font/montserratblack"
                 android:layout_height="wrap_content"
                 android:text="Leaving From" />
 
             <RadioButton
+                android:fontFamily="@font/montserratblack"
                 android:id="@+id/radio_option2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -51,7 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Search"
-                android:textColor="@color/textColor"
+                android:textColor="@color/black"
                 android:textSize="16dp"/>
         </LinearLayout>
         <LinearLayout
@@ -81,7 +83,7 @@
            android:textSize="16dp"
            android:minHeight="50dp"
            android:background="@drawable/bottom_curve_btn_bg"
-           android:backgroundTint="@color/primery"/>
+           android:backgroundTint="@color/primary"/>
     </LinearLayout>
 
 </LinearLayout>

@@ -20,6 +20,7 @@
 
         </androidx.recyclerview.widget.RecyclerView>
         <TextView
+            android:fontFamily="@font/montserratsemibold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="$500"
@@ -48,6 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/vinay"
+                android:fontFamily="@font/montserratsemibold"
                 android:textColor="@color/black"
                 android:textSize="18sp"/>
             <LinearLayout
@@ -64,7 +66,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="4.5"
-                    android:textColor="@color/textColor"
+                    android:fontFamily="@font/montserratregular"
+                    android:textColor="@color/black"
                     android:textSize="16dp"/>
             </LinearLayout>
         </LinearLayout>
