@@ -11,7 +11,6 @@ android {
     }
     defaultConfig {
         applicationId "com.auto.pooling"
-
         minSdk 26
         targetSdk 34
         versionCode 1
