@@ -3,6 +3,7 @@ package com.auto.pooling;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -29,9 +30,15 @@ public class CreatePool extends AppCompatActivity {
         }
 
         String[] options = {"1 Passenger", "2 Passengers", "3 Passengers", "4 Passengers"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,options);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item,options);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
         _binding.passengerCountSpinner.setAdapter(adapter);
+        _binding.searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
     }
 
