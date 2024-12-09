@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".LoginActivity"
-    android:gravity="center_vertical"
     android:background="@color/white"
     android:gravity="center_vertical"
     android:orientation="vertical"
