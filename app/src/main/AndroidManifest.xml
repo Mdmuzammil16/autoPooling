@@ -13,15 +13,28 @@
         android:theme="@style/Theme.AutoPooling"
         tools:targetApi="31">
         <activity
+
+            android:name=".LocationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SuccessPage"
+
             android:name=".MainPageActivity"
             android:exported="false" />
         <activity
             android:name=".HomePage"
+
             android:exported="false" />
         <activity
             android:name=".RegistrationActivity"
             android:exported="false" />
         <activity
+
+            android:name=".OtpActivity"
+            android:exported="false" />
+        <activity
+
+
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
