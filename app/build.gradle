@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace 'com.auto.pooling'
-    compileSdk 33
+    compileSdk 34
 
     buildFeatures {
         viewBinding true
@@ -13,7 +13,7 @@ android {
     defaultConfig {
         applicationId "com.auto.pooling"
         minSdk 30
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
