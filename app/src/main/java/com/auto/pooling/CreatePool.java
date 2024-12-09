@@ -16,6 +16,7 @@ public class CreatePool extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_create_pool);
         _binding = ActivityCreatePoolBinding.inflate(getLayoutInflater());
         int selectedId = _binding.radioGroup.getCheckedRadioButtonId();
 
@@ -28,11 +29,7 @@ public class CreatePool extends AppCompatActivity {
         }
 
         String[] options = {"1 Passenger", "2 Passengers", "3 Passengers", "4 Passengers"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                options
-        );
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,options);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         _binding.passengerCountSpinner.setAdapter(adapter);
 
