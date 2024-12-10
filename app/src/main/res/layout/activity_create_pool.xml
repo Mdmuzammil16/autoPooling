@@ -40,26 +40,52 @@
         android:paddingTop="15dp"
         android:background="@drawable/white_bg"
         android:layout_height="wrap_content">
-        <RadioGroup
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:layout_marginVertical="10dp"
             android:layout_marginHorizontal="15dp"
-            android:id="@+id/radioGroup"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <RadioButton
-                android:id="@+id/radio_option1"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:src="@drawable/dot_bg"
+                android:layout_width="20dp"
+                android:layout_height="20dp"/>
+            <EditText
+                android:id="@+id/leavingFromTxt"
+                android:hint="Leaving From"
+                android:background="@color/white"
+                android:layout_marginHorizontal="10dp"
+                android:layout_gravity="bottom"
                 android:layout_width="match_parent"
-                android:fontFamily="@font/montserratsemibold"
                 android:layout_height="wrap_content"
-                android:text="Leaving From" />
-
-            <RadioButton
-                android:fontFamily="@font/montserratsemibold"
-                android:id="@+id/radio_option2"
+                android:textColor="@color/black"
+                android:textSize="16dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:layout_marginVertical="10dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:src="@drawable/dot_bg"
+                android:layout_width="20dp"
+                android:layout_height="20dp"/>
+            <EditText
+                android:id="@+id/goingToTxt"
+                android:hint="Going To"
+                android:background="@color/white"
+                android:layout_marginHorizontal="10dp"
+                android:layout_gravity="bottom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Going To" />
-        </RadioGroup>
+                android:textColor="@color/black"
+                android:textSize="16dp"/>
+        </LinearLayout>
         <LinearLayout
             android:id="@+id/btnSelectDate"
             android:gravity="center_vertical"
@@ -100,12 +126,12 @@
                 android:layout_height="50dp" />
         </LinearLayout>
        <TextView
-           android:id="@+id/searchBtn"
+           android:id="@+id/createBtn"
            android:layout_gravity="bottom"
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
            android:gravity="center"
-           android:text="Search"
+           android:text="Create"
            android:textColor="@color/white"
            android:textSize="16dp"
            android:minHeight="50dp"

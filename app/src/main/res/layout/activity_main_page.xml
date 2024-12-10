@@ -28,11 +28,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:itemIconTint="@color/tab_selecting_color"
+        app:itemIconTint="@color/tabselectingcolor"
         app:labelVisibilityMode="labeled"
         style="@style/CustomBottomNavigationStyle"
-        app:itemTextColor="@color/tab_selecting_color"
+        app:itemTextColor="@color/tabselectingcolor"
         app:itemTextAppearance="@style/CustomTabTextAppearance"
-        app:menu="@menu/bottom_tabs"
+        app:menu="@menu/tab_items"
         tools:ignore="VisualLintBottomNav" />
 </LinearLayout>
