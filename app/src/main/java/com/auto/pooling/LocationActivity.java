@@ -13,6 +13,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.auto.adapter.LocationAdapter;
 import com.auto.pooling.databinding.ActivityLocationBinding;
 
 import org.json.JSONArray;
@@ -37,6 +38,8 @@ public class LocationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityLocationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
 
         binding.locationEt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -72,10 +75,11 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     private void getLocation(String url) {
+        arrayList.clear();
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
-                    JSONObject jsonObject = null;
+                    JSONObject jsonObject;
                     try {
                         jsonObject = new JSONObject(response);
                         JSONArray predictions = jsonObject.getJSONArray("predictions");
@@ -83,6 +87,7 @@ public class LocationActivity extends AppCompatActivity {
                             JSONObject prediction = predictions.getJSONObject(i);
                             arrayList.add(prediction); // Add to the ArrayList
                         }
+                        binding.locationRv.setAdapter(new LocationAdapter(LocationActivity.this, arrayList));
                     } catch (JSONException e) {
                         Toast.makeText(LocationActivity.this, "Error: " + e, Toast.LENGTH_LONG).show();
 
@@ -92,28 +97,4 @@ public class LocationActivity extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
-    private void getPlaceDetails(String placeId) {
-        String url = "https://maps.googleapis.com/maps/api/place/details/json?place_id=" + placeId + "&key=" + apiKey;
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                response -> {
-                    try {
-                        JSONObject jsonObject = new JSONObject(response);
-                        JSONObject result = jsonObject.getJSONObject("result");
-                        JSONObject geometry = result.getJSONObject("geometry");
-                        JSONObject location = geometry.getJSONObject("location");
-                        double latitude = location.getDouble("lat");
-                        double longitude = location.getDouble("lng");
-                        Log.d("fazilApp", "Latitude: " + latitude + ", Longitude: " + longitude);
-                        Toast.makeText(LocationActivity.this, "Latitude: " + latitude + ", Longitude: " + longitude, Toast.LENGTH_LONG).show();
-                    } catch (Exception e) {
-                        Log.d("fazilApp", "Error parsing Place Details: " + e.getMessage());
-                    }
-                },
-                error -> {
-                    Log.d("fazilApp", "Error fetching Place Details: " + error.getMessage());
-                });
-
-        requestQueue.add(stringRequest);
-    }
 }

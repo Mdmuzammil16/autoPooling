@@ -1,6 +1,7 @@
 package com.auto.pooling;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 
@@ -129,5 +130,19 @@ public class CreatePool extends AppCompatActivity {
             }
         });
 
+        _binding.testTap.setOnClickListener(view -> {
+            Intent intent = new Intent(CreatePool.this, LocationActivity.class);
+            startActivityForResult(intent, 200);
+
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 200 && resultCode == RESULT_OK && data != null) {
+            String location = data.getStringExtra("location");
+            Toast.makeText(this, ""+location, Toast.LENGTH_SHORT).show();
+        }
     }
 }
