@@ -3,6 +3,9 @@
     <item android:title="Home"
         android:id="@+id/homePageFragment"
         android:icon="@drawable/outline_home_24"/>
+    <item android:title="Bookings"
+        android:id="@+id/bookingsFragment"
+        android:icon="@drawable/baseline_filter_list_24"/>
     <item android:title="Profile"
         android:id="@+id/profilePageFragment"
         android:icon="@drawable/outline_person_outline_24"/>

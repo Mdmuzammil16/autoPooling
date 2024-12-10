@@ -16,7 +16,6 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-
             android:name=".CreateBookingActivity"
             android:exported="false" />
         <activity
@@ -25,20 +24,6 @@
         <activity
             android:name=".SuccessPage"
             android:exported="false" />
-        <activity
-            android:name=".RegistrationActivity"
-            android:exported="false" />
-
- <activity
-            android:name=".LocationActivity"
-            android:exported="true">
-           
-        </activity>
-        <activity
-
-            android:name=".MainPageActivity"
-            android:exported="false" />
-
         <activity
             android:name=".RegistrationActivity"
             android:exported="false" />
