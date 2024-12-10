@@ -3,9 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
-    tools:context=".LoginActivity"
-
     android:background="@color/white"
     android:gravity="center_vertical"
     android:orientation="vertical"
@@ -19,7 +16,7 @@
         android:layout_gravity="center"
         android:fontFamily="@font/montserratbold"
         android:text="AutoPool\nTransportation Made Easy"
-        android:textAlignment="center"
+        android:gravity="center"
         android:textColor="@color/black"
         android:textSize="24sp" />
 
@@ -33,7 +30,7 @@
 
 
     <LinearLayout
-        android:id="@+id/btn_google_sign_in"
+        android:id="@+id/googleBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

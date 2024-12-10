@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainPageActivity">
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentview"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -20,19 +21,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         app:navGraph="@navigation/navigation" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomtabs"
+        style="@style/CustomBottomNavigationStyle"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@color/white"
+        app:itemTextAppearance="@style/CustomTabTextAppearance"
+        app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:itemIconTint="@color/tab_selecting_color"
-        app:labelVisibilityMode="labeled"
-        style="@style/CustomBottomNavigationStyle"
-        app:itemTextColor="@color/tab_selecting_color"
-        app:itemTextAppearance="@style/CustomTabTextAppearance"
-        app:menu="@menu/bottom_tabs"
+
         tools:ignore="VisualLintBottomNav" />
 </LinearLayout>
