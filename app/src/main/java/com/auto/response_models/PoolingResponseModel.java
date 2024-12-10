@@ -5,14 +5,13 @@ import java.util.Date;
 
 public class PoolingResponseModel {
 
-    public PoolingResponseModel(String docId, String driverName, String rating, Date date, String leavingFrom, String goingTo,Long passenger,ArrayList<Double> bookedSeats) {
+    public PoolingResponseModel(String docId, String driverName, String rating, Date date, String leavingFrom, String goingTo,ArrayList<Double> bookedSeats) {
         this.docId = docId;
         this.driverName = driverName;
         this.rating = rating;
         this.date = date;
         this.leavingFrom = leavingFrom;
         this.goingTo = goingTo;
-        this.passenger = passenger;
         this.bookedSeats = bookedSeats;
     }
 
@@ -29,15 +28,11 @@ public class PoolingResponseModel {
 
     private String goingTo;
 
-    private Long passenger;
 
     public String getDocId() {
         return docId;
     }
 
-    public Long getPassenger() {
-        return passenger;
-    }
 
     public String getDriverName() {
         return driverName;
@@ -47,9 +42,6 @@ public class PoolingResponseModel {
         this.driverName = driverName;
     }
 
-    public void setPassenger(Long passenger) {
-        this.passenger = passenger;
-    }
 
     public String getRating() {
         return rating;

@@ -31,10 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:itemIconTint="@color/tabselectingcolor"
-        app:labelVisibilityMode="labeled"
-        style="@style/CustomBottomNavigationStyle"
         app:itemTextColor="@color/tabselectingcolor"
-        app:itemTextAppearance="@style/CustomTabTextAppearance"
         app:menu="@menu/tab_items"
         tools:ignore="VisualLintBottomNav" />
 </LinearLayout>

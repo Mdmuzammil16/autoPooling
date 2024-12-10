@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -47,14 +48,13 @@ public class CreateBookingActivity extends AppCompatActivity {
         binding.leavingFromTxt.setText(poolingData.getLeavingFrom());
         binding.goingToTxt.setText(poolingData.getGoingTo());
         binding.bookingDateAndTimeTxt.setText(poolingData.getDate().toString());
+        List<Double> bookedSeats = poolingData.getBookedSeats();
+
 
         ArrayList<SeatDataModel> list = new ArrayList<>();
-        list.add(new SeatDataModel(false,false,"1"));
-        list.add(new SeatDataModel(false,false,"2"));
-        list.add(new SeatDataModel(false,false,"3"));
-
-
-
+        list.add(new SeatDataModel(bookedSeats.contains(1.0),false,"1"));
+        list.add(new SeatDataModel(bookedSeats.contains(2.0),false,"2"));
+        list.add(new SeatDataModel(bookedSeats.contains(3.0),false,"3"));
 
 
         selectingSeatAdapter = new SelectingSeatAdapter(CreateBookingActivity.this,list,onlongClick ->{});
@@ -63,6 +63,7 @@ public class CreateBookingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 bookingPassenger.clear();
+                bookingPassenger.addAll(bookedSeats);
                 selectingSeatAdapter.seatList.forEach((data) ->{
                     if(data.isSeatSelected()){
                         bookingPassenger.add(Double.parseDouble(data.getSeatName()));

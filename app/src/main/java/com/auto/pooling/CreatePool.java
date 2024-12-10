@@ -27,12 +27,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CreatePool extends AppCompatActivity {
     private ActivityCreatePoolBinding _binding;
     private Date selectedDate;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    List<Double> bookingPassenger = new ArrayList<>();
+
 
 
     @Override
@@ -107,8 +111,10 @@ public class CreatePool extends AppCompatActivity {
                 poolingData.put("date", selectedDate);
                 poolingData.put("leavingFrom", _binding.leavingFromTxt.getText().toString().trim());
                 poolingData.put("goingTo", _binding.goingToTxt.getText().toString().trim());
-                poolingData.put("passenger",_binding.passengerCountSpinner.getSelectedItemPosition()+1);
-                poolingData.put("bookedSeats",new ArrayList<>());
+                for (int i = 0; i <= _binding.passengerCountSpinner.getSelectedItemPosition() ; i++) {
+                    bookingPassenger.add(Double.parseDouble(String.valueOf(i + 1)));
+                }
+                poolingData.put("bookedSeats",bookingPassenger);
 
                 db.collection("poolings")
                         .add(poolingData)
