@@ -26,7 +26,7 @@ public class MainPageActivity extends AppCompatActivity {
             NavigationUI.setupWithNavController(binding.bottomtabs, navController);
             navController.addOnDestinationChangedListener((@NonNull NavController controller, @NonNull androidx.navigation.NavDestination destination, Bundle arguments) -> {
                 if (destination.getId() == R.id.homePageFragment ||
-                        destination.getId() == R.id.profilePageFragment || destination.getId() == R.id.bookingsFragment ) {
+                        destination.getId() == R.id.profilePageFragment || destination.getId() == R.id.bookingsFragment || destination.getId() == R.id.createPoolingFragment) {
                     binding.bottomtabs.setVisibility(View.VISIBLE);
                 } else {
                     binding.bottomtabs.setVisibility(View.GONE);

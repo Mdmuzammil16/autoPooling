@@ -1,6 +1,8 @@
 <resources>
-    <string name="app_name">AutoPooling</string>
+    <string name="app_name">Rickshaw Pool</string>
     <string name="vinay">Vinay</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="selected_seats">Selected Seats</string>
+    <string name="price">Price</string>
 </resources>

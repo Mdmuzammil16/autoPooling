@@ -3,6 +3,9 @@ package com.auto.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,15 +65,18 @@ public class SelectingSeatAdapter extends RecyclerView.Adapter<SelectingSeatAdap
         SeatDataModel seatData = seatList.get(position);
         if(seatData.isSeatBooked()){
             holder.binding.selectingView.setBackgroundResource(R.drawable.booked_bg);
-            holder.binding.seatNameTxt.setTextColor(ContextCompat.getColor(context, R.color.black));
+            holder.binding.seatNameTxt.setTextColor(ContextCompat.getColor(context, R.color.gray));
+            holder.binding.seatImage.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.gray)));
         }
         else{
             if(seatData.isSeatSelected()){
                 holder.binding.selectingView.setBackgroundResource(R.drawable.selected_bg);
                 holder.binding.seatNameTxt.setTextColor(ContextCompat.getColor(context, R.color.white));
+                holder.binding.seatImage.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white)));
             }else{
                 holder.binding.selectingView.setBackgroundResource(R.drawable.white_bg);
                 holder.binding.seatNameTxt.setTextColor(ContextCompat.getColor(context, R.color.primary));
+                holder.binding.seatImage.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.primary)));
             }
         }
         holder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
