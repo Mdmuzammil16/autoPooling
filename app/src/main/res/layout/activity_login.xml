@@ -55,6 +55,7 @@
 
 
     <ProgressBar
+        android:indeterminateTint="@color/primary"
         android:id="@+id/progressBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

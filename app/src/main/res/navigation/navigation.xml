@@ -19,4 +19,9 @@
         android:name="com.auto.pooling.BookingsFragment"
         android:label="fragment_bookings"
         tools:layout="@layout/fragment_bookings" /><action android:id="@+id/action_global_bookingsFragment" app:destination="@id/bookingsFragment"/>
+    <fragment
+        android:id="@+id/createPoolingFragment"
+        android:name="com.auto.pooling.CreatePoolingFragment"
+        android:label="fragment_create_pooling"
+        tools:layout="@layout/fragment_create_pooling" /><action android:id="@+id/action_global_createPoolingFragment" app:destination="@id/createPoolingFragment"/>
 </navigation>

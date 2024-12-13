@@ -18,6 +18,7 @@
         <ImageView
             android:layout_width="32dp"
             android:layout_height="32dp"
+            android:id="@+id/backBtn"
             android:src="@drawable/baseline_chevron_left_24" />
 
         <TextView
@@ -35,6 +36,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/gray"
         android:background="@drawable/input_stroke"
         android:fontFamily="@font/montserratmedium"
         android:hint="Enter Location"
@@ -47,11 +50,23 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:src="@drawable/location" />
-
-    <androidx.recyclerview.widget.RecyclerView
+    <FrameLayout
+        android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/locationRv"
-        android:orientation="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        android:minHeight="200dp"
+        android:layout_height="wrap_content">
+        <ProgressBar
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:id="@id/progressBar"
+            android:indeterminateTint="@color/primary"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/locationRv"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+    </FrameLayout>
 </LinearLayout>

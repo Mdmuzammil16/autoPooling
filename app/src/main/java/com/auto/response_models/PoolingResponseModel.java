@@ -5,8 +5,9 @@ import java.util.Date;
 
 public class PoolingResponseModel {
 
-    public PoolingResponseModel(String docId, String driverName, String rating, Date date, String leavingFrom, String goingTo,ArrayList<Double> bookedSeats) {
+    public PoolingResponseModel(String docId,String imageUrl,String driverName, String rating, Date date, String leavingFrom, String goingTo,ArrayList<Double> bookedSeats) {
         this.docId = docId;
+        this.imageUrl = imageUrl;
         this.driverName = driverName;
         this.rating = rating;
         this.date = date;
@@ -19,6 +20,8 @@ public class PoolingResponseModel {
 
     private ArrayList<Double> bookedSeats;
     private String driverName;
+
+    private String imageUrl;
 
     private String rating;
 
@@ -81,6 +84,14 @@ public class PoolingResponseModel {
 
     public void setBookedSeats(ArrayList<Double> bookedSeats) {
         this.bookedSeats = bookedSeats;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     // Constructor

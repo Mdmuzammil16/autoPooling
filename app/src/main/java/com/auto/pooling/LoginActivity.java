@@ -37,6 +37,8 @@ public class LoginActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> googleSignInLauncher;
     FirebaseFirestore db;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
                                 pd.setVisibility(View.GONE);
                                 Toast.makeText(getApplicationContext(), "User Created Successfully", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(this, MainPageActivity.class));
-                                finish();
+                                finishAffinity();
                             })
                             .addOnFailureListener(e -> {
                                 Toast.makeText(getApplicationContext(), "failed" + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -121,6 +123,15 @@ public class LoginActivity extends AppCompatActivity {
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         googleSignInLauncher.launch(signInIntent);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+         if(mAuth.getCurrentUser() != null) {
+             startActivity(new Intent(this, MainPageActivity.class));
+             finishAffinity();
+         }
     }
 
 }
