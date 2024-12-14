@@ -5,10 +5,16 @@ import java.util.Date;
 
 public class PoolingResponseModel {
 
-    public PoolingResponseModel(String docId,String imageUrl,String driverName, String rating, Date date, String leavingFrom, String goingTo,ArrayList<Double> bookedSeats) {
+    public PoolingResponseModel(String docId,String poolingId,String userName,String userEmail,String userImage,String imageUrl,Double price,String driverName,String driverId,String rating, Date date, String leavingFrom, String goingTo,ArrayList<Double> bookedSeats) {
         this.docId = docId;
+        this.poolingId = poolingId;
+        this.userName = userName;
+        this.userEmail =userEmail;
+        this.userImage = userImage;
         this.imageUrl = imageUrl;
+        this.price = price;
         this.driverName = driverName;
+        this.driverId = driverId;
         this.rating = rating;
         this.date = date;
         this.leavingFrom = leavingFrom;
@@ -18,10 +24,52 @@ public class PoolingResponseModel {
 
     private final String docId;
 
+    public String getDriverId() {
+        return driverId;
+    }
+
+    private  final  String driverId;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public String getUserImage() {
+        return userImage;
+    }
+
+    private final String userName;
+    private final String userEmail;
+    private final String userImage;
+
+    public String getPoolingId() {
+        return poolingId;
+    }
+
+    public void setPoolingId(String poolingId) {
+        this.poolingId = poolingId;
+    }
+
+    private String poolingId;
+
     private ArrayList<Double> bookedSeats;
     private String driverName;
 
     private String imageUrl;
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    private Double price;
 
     private String rating;
 

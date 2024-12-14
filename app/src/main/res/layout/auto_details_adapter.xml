@@ -120,6 +120,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="₹500"
+                android:id="@+id/priceTxt"
                 android:textColor="@color/black"
                 android:textSize="18sp"/>
         </LinearLayout>
@@ -160,27 +161,27 @@
                     android:fontFamily="@font/montserratsemibold"
                     android:textColor="@color/black"
                     android:textSize="18sp"/>
-                <LinearLayout
-                    android:layout_marginHorizontal="5dp"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center_vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <ImageView
-                        android:src="@drawable/baseline_star_border_24"
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"/>
-                    <TextView
-                        android:id="@+id/rating"
-                        android:layout_gravity="bottom"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="4.5"
-                        android:fontFamily="@font/montserratregular"
-                        android:textColor="@color/black"
-                        android:textSize="14dp"/>
-                </LinearLayout>
+<!--                <LinearLayout-->
+<!--                    android:layout_marginHorizontal="5dp"-->
+<!--                    android:layout_marginTop="5dp"-->
+<!--                    android:gravity="center_vertical"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="horizontal">-->
+<!--                    <ImageView-->
+<!--                        android:src="@drawable/baseline_star_border_24"-->
+<!--                        android:layout_width="10dp"-->
+<!--                        android:layout_height="10dp"/>-->
+<!--                    <TextView-->
+<!--                        android:id="@+id/rating"-->
+<!--                        android:layout_gravity="bottom"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="4.5"-->
+<!--                        android:fontFamily="@font/montserratregular"-->
+<!--                        android:textColor="@color/black"-->
+<!--                        android:textSize="14dp"/>-->
+<!--                </LinearLayout>-->
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

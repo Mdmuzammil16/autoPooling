@@ -13,6 +13,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.auto.adapter.SelectingSeatAdapter;
 import com.auto.pooling.databinding.ActivityCreateBookingBinding;
 import com.auto.response_models.PoolingResponseModel;
@@ -26,6 +30,9 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +42,9 @@ public class CreateBookingActivity extends AppCompatActivity {
     private ActivityCreateBookingBinding binding;
     List<Double> bookingPassenger = new ArrayList<>();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+    String url1 = "https://androbim-d97d9.el.r.appspot.com/rikshaw/sendNotificaton";
+    String url2 = "https://androbim-d97d9.el.r.appspot.com/rikshaw/createNotificationSchedular";
 
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -68,6 +78,7 @@ public class CreateBookingActivity extends AppCompatActivity {
 
         ArrayList<SeatDataModel> list = new ArrayList<>();
         if(fromHome){
+            binding.userDetailsView.setVisibility(View.GONE);
             list.clear();
             list.add(new SeatDataModel(bookedSeats.contains(1.0),false,"1"));
             list.add(new SeatDataModel(bookedSeats.contains(2.0),false,"2"));
@@ -80,6 +91,17 @@ public class CreateBookingActivity extends AppCompatActivity {
             bookedSeats.forEach((seatNumber) -> {
                 list.add(new SeatDataModel(true, false, String.valueOf(((Number) seatNumber).intValue())));
             });
+            binding.userDetailsView.setVisibility(View.VISIBLE);
+            String userImageUrl = "https://api.dicebear.com/9.x/avataaars/png?seed="+position;
+            if(poolingData.getImageUrl() !=null){
+                userImageUrl = poolingData.getUserImage();
+            }
+            Glide.with(this)
+                    .load(userImageUrl) // Load the profile image URL
+                    .placeholder(R.drawable.example_image) // Optional placeholder while loading
+                    .error(R.drawable.example_image) // Optional error image if loading fails
+                    .into(binding.userImage);
+            binding.userName.setText(poolingData.getUserName());
             binding.confirmBookingBtn.setVisibility(View.GONE);
             binding.progressBar.setVisibility(View.GONE);
         }
@@ -92,7 +114,6 @@ public class CreateBookingActivity extends AppCompatActivity {
             }
         });
         binding.autoDriverName.setText(poolingData.getDriverName());
-        binding.rating.setText(poolingData.getRating());
         binding.leavingFromTxt.setText(poolingData.getLeavingFrom());
         binding.goingToTxt.setText(poolingData.getGoingTo());
         binding.bookingDateAndTimeTxt.setText(getDateTimeFromDate(poolingData.getDate()));
@@ -121,15 +142,19 @@ public class CreateBookingActivity extends AppCompatActivity {
                 }
                 Map<String, Object> orderData = new HashMap<>();
                 orderData.put("timestamp", FieldValue.serverTimestamp());
+                orderData.put("userImage", mAuth.getCurrentUser().getPhotoUrl());
+                orderData.put("userName", mAuth.getCurrentUser().getDisplayName());
+                orderData.put("userEmail", mAuth.getCurrentUser().getEmail());
                 orderData.put("poolingId", poolingData.getDocId());
                 orderData.put("imageUrl", poolingData.getImageUrl());
                 orderData.put("driverName", poolingData.getDriverName());
+                orderData.put("driverId", poolingData.getDriverId());
                 orderData.put("rating", "3.0");
                 orderData.put("date", poolingData.getDate());
                 orderData.put("leavingFrom", poolingData.getLeavingFrom());
                 orderData.put("goingTo", poolingData.getGoingTo());
                 orderData.put("seats", bookingPassenger);
-                orderData.put("price",500);
+                orderData.put("price",poolingData.getPrice());
                 orderData.put("uid",mAuth.getCurrentUser().getUid());
 
                 db.collection("orders")
@@ -141,6 +166,22 @@ public class CreateBookingActivity extends AppCompatActivity {
                                 db.collection("poolings").document(poolingData.getDocId())
                                         .update("bookedSeats",bookingPassenger)
                                         .addOnSuccessListener(aVoid -> {
+                                            JSONObject jsonBody = new JSONObject();
+                                            JSONObject jsonBody2 = new JSONObject();
+
+                                                // Add data to the JSON body
+                                            try {
+                                                jsonBody.put("userId", poolingData.getDriverId());
+                                                jsonBody.put("title", "New Ride");
+                                                jsonBody.put("description", "A New Ride Is Booked By "+mAuth.getCurrentUser().getDisplayName());
+                                                confirmBtn(url1, jsonBody);
+                                                jsonBody2.put("userId",mAuth.getCurrentUser().getUid());
+                                                jsonBody2.put("bookingId",documentReference.getId());
+                                                confirmBtn(url2, jsonBody2);
+                                            } catch (JSONException e) {
+                                               Log.d("","");
+                                            }
+
                                             binding.progressBar.setVisibility(View.GONE);
                                             binding.confirmBookingBtn.setVisibility(View.VISIBLE);
                                             Toast.makeText(CreateBookingActivity.this,"Data Added Successfully",Toast.LENGTH_SHORT).show();
@@ -166,4 +207,35 @@ public class CreateBookingActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void confirmBtn(String url, JSONObject jsonBody) {
+        // Create a RequestQueue instance
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                response -> {
+                    // Handle the response from the server
+                   },
+                error -> {
+                    // Handle error
+                         }) {
+
+            // Override getParams method to send the request body
+            @Override
+            public byte[] getBody() {
+                return jsonBody.toString().getBytes();
+            }
+
+            // Set content type header to inform the server that the body is in JSON format
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+        };
+
+        // Add the request to the request queue
+        requestQueue.add(stringRequest);
+    }
+
 }

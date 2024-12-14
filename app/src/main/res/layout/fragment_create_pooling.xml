@@ -112,24 +112,34 @@
                 android:textColor="@color/black"
                 android:textSize="16dp"/>
         </LinearLayout>
-        <TextView
-            android:layout_gravity="bottom"
+        <LinearLayout
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select Seats"
-            android:layout_marginHorizontal="20dp"
-            android:fontFamily="@font/montserratbold"
-            android:textColor="@color/black"
-            android:textSize="14dp"/>
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginVertical="10dp"
-            android:layout_width="wrap_content"
-            android:layout_gravity="center"
-            android:id="@+id/seatsRecycler"
-            android:orientation="horizontal"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:layout_height="wrap_content">
-        </androidx.recyclerview.widget.RecyclerView>
+            android:padding="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView
+                android:text="₹"
+                android:textColor="@color/black"
+                android:fontFamily="@font/montserratsemibold"
+                android:layout_width="20dp"
+                android:textSize="14sp"
+                android:layout_height="wrap_content"/>
+            <EditText
+                android:layout_gravity="bottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Price"
+                android:id="@+id/priceEditTxt"
+                android:inputType="phone"
+                android:paddingVertical="10dp"
+                android:background="@drawable/white_bg"
+                android:fontFamily="@font/montserratbold"
+                android:textColor="@color/black"
+                android:textSize="14dp"/>
+        </LinearLayout>
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="50dp">
