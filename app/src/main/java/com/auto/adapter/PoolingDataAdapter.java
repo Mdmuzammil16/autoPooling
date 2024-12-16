@@ -1,5 +1,6 @@
 package com.auto.adapter;
 
+import static com.auto.extensions.extension.getDate;
 import static com.auto.extensions.extension.getDateTimeWithExtraHour;
 import static com.auto.extensions.extension.getTimeFromDate;
 
@@ -15,6 +16,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.auto.pooling.CreateBookingActivity;
+import com.auto.pooling.PoolBookingsActivity;
 import com.auto.pooling.R;
 import com.auto.pooling.databinding.AutoDetailsAdapterBinding;
 import com.auto.response_models.PoolingResponseModel;
@@ -31,6 +33,7 @@ public class PoolingDataAdapter extends RecyclerView.Adapter<PoolingDataAdapter.
 
     private Context context;
     private boolean fromHome;
+    private boolean fromPoolBooking;
     private ArrayList<PoolingResponseModel> poolingList;
     private OnLongClickListener onLongClick;
 
@@ -40,9 +43,10 @@ public class PoolingDataAdapter extends RecyclerView.Adapter<PoolingDataAdapter.
         void onLongClick(PoolingResponseModel commentModel);
     }
 
-    public PoolingDataAdapter(Context context,boolean fromHome,ArrayList<PoolingResponseModel> poolingList, OnLongClickListener onLongClick) {
+    public PoolingDataAdapter(Context context,boolean fromPoolBooking,boolean fromHome,ArrayList<PoolingResponseModel> poolingList, OnLongClickListener onLongClick) {
         this.context = context;
         this.fromHome = fromHome;
+        this.fromPoolBooking = fromPoolBooking;
         this.poolingList = poolingList;
         this.onLongClick = onLongClick;
     }
@@ -63,6 +67,7 @@ public class PoolingDataAdapter extends RecyclerView.Adapter<PoolingDataAdapter.
         return new Holder(binding);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull Holder holder, @SuppressLint("RecyclerView") int position) {
         PoolingResponseModel poolingData = poolingList.get(position);
@@ -70,19 +75,26 @@ public class PoolingDataAdapter extends RecyclerView.Adapter<PoolingDataAdapter.
         holder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, CreateBookingActivity.class);
-                Gson gson = new Gson();
-                String jsonString = gson.toJson(poolingData);
-                intent.putExtra("poolingModel",jsonString);
-                intent.putExtra("fromHome",fromHome);
-                intent.putExtra("position",String.valueOf(position));
-                context.startActivity(intent);
+                if(fromPoolBooking == true){
+                    Intent intent = new Intent(context, PoolBookingsActivity.class);
+                    intent.putExtra("poolingId",poolingData.getPoolingId());
+                    context.startActivity(intent);
+                }else{
+                    Intent intent = new Intent(context, CreateBookingActivity.class);
+                    Gson gson = new Gson();
+                    String jsonString = gson.toJson(poolingData);
+                    intent.putExtra("poolingModel",jsonString);
+                    intent.putExtra("fromHome",fromHome);
+                    intent.putExtra("position",String.valueOf(position));
+                    context.startActivity(intent);
+                }
             }
         });
+        holder.binding.dateTxt.setText(getDate(poolingData.getDate()));
         holder.binding.autoDriverName.setText(poolingData.getDriverName());
-        holder.binding.rating.setText(poolingData.getRating());
         holder.binding.leavingFromTxt.setText(poolingData.getLeavingFrom());
         holder.binding.goingToTxt.setText(poolingData.getGoingTo());
+        holder.binding.priceTxt.setText("₹"+poolingData.getPrice());
         holder.binding.startTime.setText(getTimeFromDate(poolingData.getDate()));
         holder.binding.endTime.setText(getDateTimeWithExtraHour(poolingData.getDate()));
         String imageUrl = "https://api.dicebear.com/9.x/avataaars/png?seed="+position;
@@ -106,18 +118,4 @@ public class PoolingDataAdapter extends RecyclerView.Adapter<PoolingDataAdapter.
         this.poolingList = newData;
         notifyDataSetChanged();
     }
-
-
-
-//    @SuppressLint("NotifyDataSetChanged")
-//    public void addData(CommentModel comment) {
-//        this.commentsList.add(comment);
-//        notifyDataSetChanged();
-//    }
-//
-//    @SuppressLint("NotifyDataSetChanged")
-//    public void removeData(CommentModel comment) {
-//        this.commentsList.remove(comment);
-//        notifyDataSetChanged();
-//    }
 }

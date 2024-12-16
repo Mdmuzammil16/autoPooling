@@ -25,8 +25,7 @@ public class SuccessPage extends AppCompatActivity {
         binding.homeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(SuccessPage.this, MainPageActivity.class));
-                finishAffinity();
+                finish();
             }
         });
 

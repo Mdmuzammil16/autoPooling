@@ -26,10 +26,13 @@ import android.widget.Toast;
 import com.auto.adapter.SelectingSeatAdapter;
 import com.auto.pooling.databinding.FragmentCreatePoolingBinding;
 import com.auto.response_models.SeatDataModel;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -53,8 +56,9 @@ public class CreatePoolingFragment extends Fragment {
 
     List<Double> bookingPassenger = new ArrayList<>();
 
+    private boolean isDriver = false;
+
     private ActivityResultLauncher<Intent> locationActivityLauncher;
-    private SelectingSeatAdapter selectingSeatAdapter;
 
 
 
@@ -67,6 +71,32 @@ public class CreatePoolingFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        db.collection("users").document("" + mAuth.getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            isDriver = Boolean.TRUE.equals(documentSnapshot.getBoolean("driver"));
+                            if(isDriver){
+                                _binding.createPoolingView.setVisibility(View.VISIBLE);
+                                _binding.registerAsDriverView.setVisibility(View.GONE);
+                            }
+                            else{
+                                _binding.createPoolingView.setVisibility(View.GONE);
+                                _binding.registerAsDriverView.setVisibility(View.VISIBLE);
+                            }
+                        } else {
+                            Toast.makeText(requireContext(), "No user document found for ID", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(requireContext(), "failed" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -76,30 +106,25 @@ public class CreatePoolingFragment extends Fragment {
                 if (data != null) {
                     String location = data.getStringExtra("location");
                     if (result.getResultCode() == 200) {
-                        _binding.leavingFromTxt.setText(location);
+                        if(_binding.goingToTxt.getText().toString().trim().equalsIgnoreCase(location.toString().trim())){
+                            Toast.makeText(requireContext(),"Leaving From And Going To Location Should Not Be Same",Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            _binding.leavingFromTxt.setText(location);
+                        }
                     } else {
-                        _binding.goingToTxt.setText(location);
+                        if(_binding.leavingFromTxt.getText().toString().trim().equalsIgnoreCase(location.toString().trim())){
+                            Toast.makeText(requireContext(),"Leaving From And Going To Location Should Not Be Same",Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            _binding.goingToTxt.setText(location);
+                        }
                     }
                 }
             } else {
                 Toast.makeText(requireContext(), "Service Not Available", Toast.LENGTH_SHORT).show();
             }
         });
-
-        ArrayList<SeatDataModel> list = new ArrayList<>();
-        list.clear();
-        list.add(new SeatDataModel(false,false,"1"));
-        list.add(new SeatDataModel(false,false,"2"));
-        list.add(new SeatDataModel(false,false,"3"));
-
-        selectingSeatAdapter = new SelectingSeatAdapter(requireContext(),list,onlongClick ->{});
-        _binding.seatsRecycler.setAdapter(selectingSeatAdapter);
-
-//        String[] options = {"1 Passenger", "2 Passengers", "3 Passengers"};
-//        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),R.layout.spinner_item, options);
-//
-//        adapter.setDropDownViewResource(R.layout.spinner_item); // Use a system dropdown layout
-//        _binding.passengerCountSpinner.setAdapter(adapter);
 
 
 
@@ -164,83 +189,60 @@ public class CreatePoolingFragment extends Fragment {
                     _binding.createBtn.setVisibility(View.VISIBLE);
                     return;
                 }
-                bookingPassenger.clear();
-                selectingSeatAdapter.seatList.forEach((data) ->{
-                    if(data.isSeatSelected()){
-                        bookingPassenger.add(Double.parseDouble(data.getSeatName()));
-                    }
-                });
-                if(bookingPassenger.size() == 0) {
-                    Toast.makeText(requireContext(),"Select Any Seat",Toast.LENGTH_SHORT).show();
+                else if(_binding.priceEditTxt.getText().toString().trim().isEmpty()){
+                    Toast.makeText(requireContext(),"Enter Price",Toast.LENGTH_SHORT).show();
                     _binding.progressBar.setVisibility(View.GONE);
                     _binding.createBtn.setVisibility(View.VISIBLE);
                     return;
                 }
 
-                Map<String, Object> poolingData = new HashMap<>();
-                poolingData.put("timestamp", FieldValue.serverTimestamp());
-                poolingData.put("driverName",generateRandomName());
-                poolingData.put("imageUrl",getImageUrl());
-                poolingData.put("rating", "3.0");
-                poolingData.put("date", selectedDate);
-                poolingData.put("leavingFrom", _binding.leavingFromTxt.getText().toString().trim());
-                poolingData.put("goingTo", _binding.goingToTxt.getText().toString().trim());
-                poolingData.put("bookedSeats",bookingPassenger);
-                poolingData.put("uid",mAuth.getCurrentUser().getUid());
+                if(isDriver){
+                    Map<String, Object> poolingData = new HashMap<>();
+                    poolingData.put("timestamp", FieldValue.serverTimestamp());
+                    poolingData.put("driverName",mAuth.getCurrentUser().getDisplayName());
+                    poolingData.put("driverId",mAuth.getCurrentUser().getUid());
+                    poolingData.put("imageUrl",mAuth.getCurrentUser().getPhotoUrl());
+                    poolingData.put("date", selectedDate);
+                    poolingData.put("leavingFrom", _binding.leavingFromTxt.getText().toString().trim());
+                    poolingData.put("goingTo", _binding.goingToTxt.getText().toString().trim());
+                    poolingData.put("bookedSeats",bookingPassenger);
+                    poolingData.put("price",Double.parseDouble(_binding.priceEditTxt.getText().toString()));
+                    db.collection("poolings")
+                            .add(poolingData)
+                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+                                    _binding.progressBar.setVisibility(View.GONE);
+                                    _binding.createBtn.setVisibility(View.VISIBLE);
+                                    Toast.makeText(requireContext(),"Data Added Successfully",Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(requireContext(), SuccessPage.class);
+                                    intent.putExtra("leavingFrom",_binding.leavingFromTxt.getText().toString().trim());
+                                    intent.putExtra("goingTo",_binding.goingToTxt.getText().toString().trim());
+                                    startActivity(intent);
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    _binding.progressBar.setVisibility(View.GONE);
+                                    _binding.createBtn.setVisibility(View.VISIBLE);
+                                    Toast.makeText(requireContext(),e.toString(),Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
+                else{
+                    Toast.makeText(requireContext(), "Only Driver Can Create Pooling", Toast.LENGTH_SHORT).show();
+                    _binding.progressBar.setVisibility(View.GONE);
+                    _binding.createBtn.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
-                db.collection("poolings")
-                        .add(poolingData)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                Map<String, Object> orderData = new HashMap<>();
-                                orderData.put("timestamp", FieldValue.serverTimestamp());
-                                orderData.put("poolingId", documentReference.getId());
-                                orderData.put("imageUrl",poolingData.get("imageUrl"));
-                                orderData.put("driverName",poolingData.get("driverName"));
-                                orderData.put("rating", "3.0");
-                                orderData.put("date",selectedDate);
-                                orderData.put("leavingFrom", _binding.leavingFromTxt.getText().toString().trim());
-                                orderData.put("goingTo", _binding.goingToTxt.getText().toString().trim());
-                                orderData.put("seats", bookingPassenger);
-                                orderData.put("price",500);
-                                orderData.put("uid",mAuth.getCurrentUser().getUid());
-
-                                db.collection("orders")
-                                        .add(orderData)
-                                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                            @Override
-                                            public void onSuccess(DocumentReference documentReference) {
-                                                _binding.progressBar.setVisibility(View.GONE);
-                                                _binding.createBtn.setVisibility(View.VISIBLE);
-                                                Toast.makeText(requireContext(),"Data Added Successfully",Toast.LENGTH_SHORT).show();
-                                                Intent intent = new Intent(requireContext(), SuccessPage.class);
-                                                intent.putExtra("leavingFrom",_binding.leavingFromTxt.getText().toString().trim());
-                                                intent.putExtra("goingTo",_binding.goingToTxt.getText().toString().trim());
-                                                startActivity(intent);
-//                                                Intent resultIntent = new Intent();
-//                                                setResult(RESULT_OK, resultIntent);
-//                                                finish();
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                _binding.progressBar.setVisibility(View.GONE);
-                                                _binding.createBtn.setVisibility(View.VISIBLE);
-                                                Toast.makeText(requireContext(),e.toString(),Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                _binding.progressBar.setVisibility(View.GONE);
-                                _binding.createBtn.setVisibility(View.VISIBLE);
-                                Toast.makeText(requireContext(),e.toString(),Toast.LENGTH_SHORT).show();
-                            }
-                        });
+        _binding.registerAsDriverBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              Intent intent = new Intent(requireContext(),RegisterDriverActivity.class);
+              startActivity(intent);
             }
         });
 

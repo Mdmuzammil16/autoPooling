@@ -1,24 +1,32 @@
 package com.auto.pooling;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.auto.pooling.databinding.ActivityLoginBinding;
+import com.auto.pooling.databinding.DialogBoxBinding;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -75,6 +83,51 @@ public class LoginActivity extends AppCompatActivity {
         );
 
 
+        binding.signUpBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+            }
+        });
+
+        binding.signInBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.signInProgressBar.setVisibility(View.VISIBLE);
+                binding.signInBtn.setVisibility(View.GONE);
+                if(!binding.emailEdtTxt.getText().toString().isEmpty() && binding.emailEdtTxt.getText().toString().contains("@gmail.com") && !binding.passwordEdtTxt.getText().toString().isEmpty()){
+                    mAuth.signInWithEmailAndPassword(binding.emailEdtTxt.getText().toString(),binding.passwordEdtTxt.getText().toString()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                        @Override
+                        public void onSuccess(AuthResult authResult) {
+                            binding.signInProgressBar.setVisibility(View.GONE);
+                            binding.signInBtn.setVisibility(View.VISIBLE);
+                            startActivity(new Intent(LoginActivity.this, MainPageActivity.class));
+                            finishAffinity();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            binding.signInProgressBar.setVisibility(View.GONE);
+                            binding.signInBtn.setVisibility(View.VISIBLE);
+                            Toast.makeText(LoginActivity.this,"Please Sign Up",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                else if(binding.emailEdtTxt.getText().toString().isEmpty() || !binding.emailEdtTxt.getText().toString().contains("@gmail.com")){
+                    binding.signInProgressBar.setVisibility(View.GONE);
+                    binding.signInBtn.setVisibility(View.VISIBLE);
+                    Toast.makeText(LoginActivity.this,"Enter Your Email",Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    binding.signInProgressBar.setVisibility(View.GONE);
+                    binding.signInBtn.setVisibility(View.VISIBLE);
+                    Toast.makeText(LoginActivity.this,"Enter Password",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
     }
 
 
@@ -85,20 +138,37 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.signInWithCredential(credential).addOnCompleteListener(this, task -> {
             try {
                 if (task.isSuccessful()) {
-
                     FirebaseUser user = mAuth.getCurrentUser();
                     db = FirebaseFirestore.getInstance();
-                    Map<String, Object> users = new HashMap<>();
-                    users.put("uid", user.getUid() + "");
-                    users.put("name", user.getDisplayName());
-                    users.put("email", user.getEmail());
-
-                    db.collection("users").document("" + user.getUid()).set(users, SetOptions.merge())
-                            .addOnSuccessListener(a -> {
+                    db.collection("users").document("" + user.getUid()).get()
+                            .addOnSuccessListener(documentSnapshot -> {
                                 pd.setVisibility(View.GONE);
-                                Toast.makeText(getApplicationContext(), "User Created Successfully", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(this, MainPageActivity.class));
-                                finishAffinity();
+                                binding.googleBtn.setVisibility(View.VISIBLE);
+                                if (documentSnapshot.exists()) {
+                                    startActivity(new Intent(LoginActivity.this, MainPageActivity.class));
+                                    finishAffinity();
+                                } else {
+                                    // Document does not exist, add a new document
+                                    Map<String, Object> users = new HashMap<>();
+                                    users.put("uid", user.getUid());
+                                    users.put("name", user.getDisplayName());
+                                    users.put("email", user.getEmail());
+                                    users.put("driver", false);
+
+                                    db.collection("users").document(user.getUid()).set(users)
+                                            .addOnSuccessListener(a -> {
+                                                pd.setVisibility(View.GONE);
+                                                binding.googleBtn.setVisibility(View.VISIBLE);
+                                                Toast.makeText(getApplicationContext(), "User Created Successfully", Toast.LENGTH_SHORT).show();
+                                                startActivity(new Intent(LoginActivity.this, MainPageActivity.class));
+                                                finishAffinity();
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Toast.makeText(getApplicationContext(), "failed" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                pd.setVisibility(View.GONE);
+                                                binding.googleBtn.setVisibility(View.VISIBLE);
+                                            });
+                                }
                             })
                             .addOnFailureListener(e -> {
                                 Toast.makeText(getApplicationContext(), "failed" + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -133,5 +203,6 @@ public class LoginActivity extends AppCompatActivity {
              finishAffinity();
          }
     }
+
 
 }

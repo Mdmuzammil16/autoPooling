@@ -1,24 +1,20 @@
 package com.auto.pooling;
 
-import android.os.Bundle;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.auto.adapter.PoolingDataAdapter;
-import com.auto.pooling.databinding.FragmentBookingsBinding;
+import com.auto.pooling.databinding.ActivityPoolBookingsBinding;
 import com.auto.response_models.PoolingResponseModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -27,11 +23,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Date;
 
+public class PoolBookingsActivity extends AppCompatActivity {
 
-public class BookingsFragment extends Fragment {
-
-
-    private FragmentBookingsBinding binding;
+    private ActivityPoolBookingsBinding binding;
 
     ArrayList<PoolingResponseModel> newArrayList = new ArrayList<>();
 
@@ -43,26 +37,31 @@ public class BookingsFragment extends Fragment {
     private PoolingDataAdapter poolingDataAdapter;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentBookingsBinding.inflate(getLayoutInflater());
-        return binding.getRoot();
-    }
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = ActivityPoolBookingsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        Intent i = getIntent();
+        String poolingId = i.getStringExtra("poolingId");
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        poolingDataAdapter = new PoolingDataAdapter(requireContext(),false,false,new ArrayList<>(), onlongClick -> {
+        binding.backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        poolingDataAdapter = new PoolingDataAdapter(PoolBookingsActivity.this,false,false,new ArrayList<>(), onlongClick -> {
 
         });
         binding.bookingListView.setAdapter(poolingDataAdapter);
-        fetchData();
-    }
+        fetchData(poolingId);
 
-    private void fetchData() {
+    }
+    private void fetchData(String poolingId) {
         binding.progressBar.setVisibility(View.VISIBLE);
         binding.bookingListView.setVisibility(View.GONE);
         newArrayList.clear();
-        db.collection("orders").whereEqualTo("uid",mAuth.getCurrentUser().getUid()).orderBy("timestamp", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("orders").whereEqualTo("poolingId",poolingId).orderBy("timestamp", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -91,7 +90,7 @@ public class BookingsFragment extends Fragment {
                     binding.progressBar.setVisibility(View.GONE);
                     binding.bookingListView.setVisibility(View.VISIBLE);
                     Log.d("Value",task.getException().toString());
-                    Toast.makeText(requireContext(),"Error getting Documents" + task.getException(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PoolBookingsActivity.this,"Error getting Documents" + task.getException(),Toast.LENGTH_SHORT).show();
                 }
             }
         });
