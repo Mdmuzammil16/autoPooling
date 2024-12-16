@@ -78,12 +78,11 @@ public class BookingsFragment extends Fragment {
                         String driverId = document.getString("driverId");
                         String imageUrl = document.getString("imageUrl");
                         Double price = document.getDouble("price");
-                        String rating = document.getString("rating");
                         Date date = document.getDate("date");
                         String leavingFrom = document.getString("leavingFrom");
                         String goingTo = document.getString("goingTo");
                         ArrayList<Double> bookedSeats = (ArrayList<Double>) document.get("seats");
-                        PoolingResponseModel poolingModel = new PoolingResponseModel(docId,poolingId,userName,userEmail,userImage,imageUrl,driverName,driverId,price,rating,date,leavingFrom,goingTo,bookedSeats);
+                        PoolingResponseModel poolingModel = new PoolingResponseModel(docId,poolingId,userName,userEmail,userImage,imageUrl,driverName,driverId,price,"",date,leavingFrom,goingTo,bookedSeats);
                         newArrayList.add(poolingModel);
                     }
                     poolingDataAdapter.newData(newArrayList);

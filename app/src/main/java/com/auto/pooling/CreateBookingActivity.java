@@ -73,13 +73,12 @@ public class CreateBookingActivity extends AppCompatActivity {
                 String driverName = document.getString("driverName");
                 String driverId = document.getString("driverId");
                 String imageUrl = document.getString("imageUrl");
-                String rating = document.getString("rating");
                 Date date = document.getDate("date");
                 Double price = document.getDouble("price");
                 String leavingFrom = document.getString("leavingFrom");
                 String goingTo = document.getString("goingTo");
                 ArrayList<Double> bookedSeats = (ArrayList<Double>) document.get("bookedSeats");
-                poolingData = new PoolingResponseModel(poolingId,poolingId,"","","",imageUrl,driverName,driverId,price,rating,date,leavingFrom,goingTo,bookedSeats);
+                poolingData = new PoolingResponseModel(poolingId,poolingId,"","","",imageUrl,driverName,driverId,price,"",date,leavingFrom,goingTo,bookedSeats);
                 ArrayList<SeatDataModel> list = new ArrayList<>();
                 if(fromHome){
                     list.clear();
@@ -169,7 +168,6 @@ public class CreateBookingActivity extends AppCompatActivity {
                 orderData.put("imageUrl", poolingData.getImageUrl());
                 orderData.put("driverName", poolingData.getDriverName());
                 orderData.put("driverId", poolingData.getDriverId());
-                orderData.put("rating", "3.0");
                 orderData.put("date", poolingData.getDate());
                 orderData.put("leavingFrom", poolingData.getLeavingFrom());
                 orderData.put("goingTo", poolingData.getGoingTo());

@@ -207,13 +207,12 @@ public class HomePageFragment extends Fragment {
                         String driverName = document.getString("driverName");
                         String driverId = document.getString("driverId");
                         String imageUrl = document.getString("imageUrl");
-                        String rating = document.getString("rating");
                         Date date = document.getDate("date");
                         Double price = document.getDouble("price");
                         String leavingFrom = document.getString("leavingFrom");
                         String goingTo = document.getString("goingTo");
                         ArrayList<Double> bookedSeats = (ArrayList<Double>) document.get("bookedSeats");
-                        PoolingResponseModel poolingModel = new PoolingResponseModel(poolingId,poolingId,"","","",imageUrl,driverName,driverId,price,rating,date,leavingFrom,goingTo,bookedSeats);
+                        PoolingResponseModel poolingModel = new PoolingResponseModel(poolingId,poolingId,"","","",imageUrl,driverName,driverId,price,"",date,leavingFrom,goingTo,bookedSeats);
                         newArrayList.add(poolingModel);
                     }
                     poolingDataAdapter.newData(newArrayList);

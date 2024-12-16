@@ -44,6 +44,19 @@ public class MainPageActivity extends AppCompatActivity {
                 return;
             }
         }
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentview);
+        if (navHostFragment != null) {
+            NavController navController = navHostFragment.getNavController();
+            NavigationUI.setupWithNavController(binding.bottomtabs, navController);
+            navController.addOnDestinationChangedListener((@NonNull NavController controller, @NonNull NavDestination destination, Bundle arguments) -> {
+                if (destination.getId() == R.id.homePageFragment ||
+                        destination.getId() == R.id.profilePageFragment || destination.getId() == R.id.bookingsFragment || destination.getId() == R.id.createPoolingFragment) {
+                    binding.bottomtabs.setVisibility(View.VISIBLE);
+                } else {
+                    binding.bottomtabs.setVisibility(View.GONE);
+                }
+            });
+        }
 //        db.collection("users").document(""+mAuth.getCurrentUser().getUid())
 //                .get()
 //                .addOnSuccessListener(documentSnapshot -> {
@@ -93,18 +106,5 @@ public class MainPageActivity extends AppCompatActivity {
                         Log.d("FCM", "Failed to subscribe to topic: " + mAuth.getCurrentUser().getUid());
                     }
                 });
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentview);
-        if (navHostFragment != null) {
-            NavController navController = navHostFragment.getNavController();
-            NavigationUI.setupWithNavController(binding.bottomtabs, navController);
-            navController.addOnDestinationChangedListener((@NonNull NavController controller, @NonNull NavDestination destination, Bundle arguments) -> {
-                if (destination.getId() == R.id.homePageFragment ||
-                        destination.getId() == R.id.profilePageFragment || destination.getId() == R.id.bookingsFragment || destination.getId() == R.id.createPoolingFragment) {
-                    binding.bottomtabs.setVisibility(View.VISIBLE);
-                } else {
-                    binding.bottomtabs.setVisibility(View.GONE);
-                }
-            });
-        }
     }
 }
