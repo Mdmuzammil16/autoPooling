@@ -1,5 +1,7 @@
 package com.auto.pooling;
 
+import static com.auto.extensions.extension.validateNumberPlate;
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -92,7 +94,7 @@ public class RegisterDriverActivity extends AppCompatActivity {
             public void onClick(View v) {
                 binding.progressBar.setVisibility(View.VISIBLE);
                 binding.submitBtn.setVisibility(View.GONE);
-                if((imageUri != null || !documentUrl.isEmpty()) && !binding.numberPlateTxt.getText().toString().trim().isEmpty()){
+                if((imageUri != null || !documentUrl.isEmpty()) && !binding.numberPlateTxt.getText().toString().trim().isEmpty() && validateNumberPlate(binding.numberPlateTxt.getText().toString().trim())){
                     if(documentUrl.isEmpty() && imageUri != null){
                         uploadImageToStorage(imageUri,binding.numberPlateTxt.getText().toString().trim());
                     }
@@ -100,15 +102,15 @@ public class RegisterDriverActivity extends AppCompatActivity {
                         updateDriverDetails(documentUrl,binding.numberPlateTxt.getText().toString().trim());
                     }
                 }
-                else if(imageUri == null){
+                else if(imageUri == null && documentUrl.isEmpty()){
                     binding.progressBar.setVisibility(View.GONE);
                     binding.submitBtn.setVisibility(View.VISIBLE);
                     Toast.makeText(RegisterDriverActivity.this,"Licence Should Uploaded",Toast.LENGTH_SHORT).show();
                 }
-                else{
+                else if (!validateNumberPlate(binding.numberPlateTxt.getText().toString().trim()) || binding.numberPlateTxt.getText().toString().trim().isEmpty()){
                     binding.progressBar.setVisibility(View.GONE);
                     binding.submitBtn.setVisibility(View.VISIBLE);
-                    Toast.makeText(RegisterDriverActivity.this,"Enter Registered Number Plate",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterDriverActivity.this,"Enter Registered Number Plate Correctly",Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -155,9 +157,11 @@ public class RegisterDriverActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
                 binding.progressBar.setVisibility(View.GONE);
                 binding.submitBtn.setVisibility(View.VISIBLE);
-                Toast.makeText(getApplicationContext(), "Updated As Drived", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Updated As Driver", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
     }
+
+
 }

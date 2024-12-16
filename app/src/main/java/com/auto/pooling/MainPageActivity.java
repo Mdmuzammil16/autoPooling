@@ -44,23 +44,24 @@ public class MainPageActivity extends AppCompatActivity {
                 return;
             }
         }
-        db.collection("users").document(""+mAuth.getCurrentUser().getUid())
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        boolean isDriver = Boolean.TRUE.equals(documentSnapshot.getBoolean("driver"));
-                        if(isDriver){
-                            binding.bottomtabs.getMenu().clear();
-                            binding.bottomtabs.inflateMenu(R.menu.driver_tabs);
-                        } else {
-                            binding.bottomtabs.getMenu().clear();
-                            binding.bottomtabs.inflateMenu(R.menu.tab_items);
-                        }
-                    } else {
-                        Log.d("Document", "No such document exists!");
-                    }
-                })
-                .addOnFailureListener(e -> Log.d("Document", "Failed to fetch document: " + e.getMessage()));
+//        db.collection("users").document(""+mAuth.getCurrentUser().getUid())
+//                .get()
+//                .addOnSuccessListener(documentSnapshot -> {
+//                    if (documentSnapshot.exists()) {
+//                        boolean isDriver = Boolean.TRUE.equals(documentSnapshot.getBoolean("driver"));
+//                        if(isDriver){
+//                            binding.bottomtabs.getMenu().clear();
+//                            binding.bottomtabs.inflateMenu(R.menu.driver_tabs);
+//                        } else {
+//                            binding.bottomtabs.getMenu().clear();
+//                            binding.bottomtabs.inflateMenu(R.menu.tab_items);
+//                        }
+//                    } else {
+//                        Log.d("Document", "No such document exists!");
+//                    }
+//                })
+//                .addOnFailureListener(e -> Log.d("Document", "Failed to fetch document: " + e.getMessage()));
+
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 //            if (ContextCompat.checkSelfPermission(this, Manifest.permission.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION) != PackageManager.PERMISSION_GRANTED) {
 //                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION}, 101);

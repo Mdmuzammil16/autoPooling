@@ -1,5 +1,6 @@
 package com.auto.adapter;
 
+import static com.auto.extensions.extension.getDate;
 import static com.auto.extensions.extension.getDateTimeWithExtraHour;
 import static com.auto.extensions.extension.getTimeFromDate;
 
@@ -89,6 +90,7 @@ public class PoolingDataAdapter extends RecyclerView.Adapter<PoolingDataAdapter.
                 }
             }
         });
+        holder.binding.dateTxt.setText(getDate(poolingData.getDate()));
         holder.binding.autoDriverName.setText(poolingData.getDriverName());
         holder.binding.leavingFromTxt.setText(poolingData.getLeavingFrom());
         holder.binding.goingToTxt.setText(poolingData.getGoingTo());

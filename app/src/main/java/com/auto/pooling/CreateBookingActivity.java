@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
@@ -34,6 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +53,7 @@ public class CreateBookingActivity extends AppCompatActivity {
 
     private SelectingSeatAdapter selectingSeatAdapter;
 
+    PoolingResponseModel poolingData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +64,54 @@ public class CreateBookingActivity extends AppCompatActivity {
         String poolingModel = intent.getStringExtra("poolingModel");
         String position = intent.getStringExtra("position");
         boolean fromHome = intent.getBooleanExtra("fromHome",true);
-        PoolingResponseModel poolingData = gson.fromJson(poolingModel, PoolingResponseModel.class);
+         poolingData = gson.fromJson(poolingModel, PoolingResponseModel.class);
+
+        db.collection("poolings").document(poolingData.getDocId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot document) {
+                String poolingId = document.getId();
+                String driverName = document.getString("driverName");
+                String driverId = document.getString("driverId");
+                String imageUrl = document.getString("imageUrl");
+                String rating = document.getString("rating");
+                Date date = document.getDate("date");
+                Double price = document.getDouble("price");
+                String leavingFrom = document.getString("leavingFrom");
+                String goingTo = document.getString("goingTo");
+                ArrayList<Double> bookedSeats = (ArrayList<Double>) document.get("bookedSeats");
+                poolingData = new PoolingResponseModel(poolingId,poolingId,"","","",imageUrl,driverName,driverId,price,rating,date,leavingFrom,goingTo,bookedSeats);
+                ArrayList<SeatDataModel> list = new ArrayList<>();
+                if(fromHome){
+                    list.clear();
+                    list.add(new SeatDataModel(bookedSeats.contains(1.0),false,"1"));
+                    list.add(new SeatDataModel(bookedSeats.contains(2.0),false,"2"));
+                    list.add(new SeatDataModel(bookedSeats.contains(3.0),false,"3"));
+                    binding.userDetailsView.setVisibility(View.GONE);
+                    binding.confirmButtonView.setVisibility(View.VISIBLE);
+
+                }
+                else{
+                    list.clear();
+                    bookedSeats.forEach((seatNumber) -> {
+                        list.add(new SeatDataModel(true, false, String.valueOf(((Number) seatNumber).intValue())));
+                    });
+                    binding.userDetailsView.setVisibility(View.VISIBLE);
+                    binding.confirmButtonView.setVisibility(View.GONE);
+                    String userImageUrl = "https://api.dicebear.com/9.x/avataaars/png?seed="+position;
+                    if(poolingData.getImageUrl() !=null){
+                        userImageUrl = poolingData.getUserImage();
+                    }
+                    Glide.with(CreateBookingActivity.this)
+                            .load(userImageUrl) // Load the profile image URL
+                            .placeholder(R.drawable.example_image) // Optional placeholder while loading
+                            .error(R.drawable.example_image) // Optional error image if loading fails
+                            .into(binding.userImage);
+                    binding.userName.setText(poolingData.getUserName());
+                }
+                selectingSeatAdapter = new SelectingSeatAdapter(CreateBookingActivity.this,list,onlongClick ->{});
+                binding.seatRecyclerList.setAdapter(selectingSeatAdapter);
+            }
+        });
 
         String imageUrl = "https://api.dicebear.com/9.x/avataaars/png?seed="+position;
         if(poolingData.getImageUrl() !=null){
@@ -76,35 +126,6 @@ public class CreateBookingActivity extends AppCompatActivity {
         List<Double> bookedSeats = poolingData.getBookedSeats();
 
 
-        ArrayList<SeatDataModel> list = new ArrayList<>();
-        if(fromHome){
-            binding.userDetailsView.setVisibility(View.GONE);
-            list.clear();
-            list.add(new SeatDataModel(bookedSeats.contains(1.0),false,"1"));
-            list.add(new SeatDataModel(bookedSeats.contains(2.0),false,"2"));
-            list.add(new SeatDataModel(bookedSeats.contains(3.0),false,"3"));
-            binding.confirmBookingBtn.setVisibility(View.VISIBLE);
-            binding.progressBar.setVisibility(View.GONE);
-        }
-        else{
-            list.clear();
-            bookedSeats.forEach((seatNumber) -> {
-                list.add(new SeatDataModel(true, false, String.valueOf(((Number) seatNumber).intValue())));
-            });
-            binding.userDetailsView.setVisibility(View.VISIBLE);
-            String userImageUrl = "https://api.dicebear.com/9.x/avataaars/png?seed="+position;
-            if(poolingData.getImageUrl() !=null){
-                userImageUrl = poolingData.getUserImage();
-            }
-            Glide.with(this)
-                    .load(userImageUrl) // Load the profile image URL
-                    .placeholder(R.drawable.example_image) // Optional placeholder while loading
-                    .error(R.drawable.example_image) // Optional error image if loading fails
-                    .into(binding.userImage);
-            binding.userName.setText(poolingData.getUserName());
-            binding.confirmBookingBtn.setVisibility(View.GONE);
-            binding.progressBar.setVisibility(View.GONE);
-        }
         binding.backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,10 +140,9 @@ public class CreateBookingActivity extends AppCompatActivity {
         binding.bookingDateAndTimeTxt.setText(getDateTimeFromDate(poolingData.getDate()));
         binding.startTime.setText(getTimeFromDate(poolingData.getDate()));
         binding.endTime.setText(getDateTimeWithExtraHour(poolingData.getDate()));
+        binding.priceTxt.setText("₹"+String.valueOf(poolingData.getPrice()));
 
 
-        selectingSeatAdapter = new SelectingSeatAdapter(CreateBookingActivity.this,list,onlongClick ->{});
-        binding.seatRecyclerList.setAdapter(selectingSeatAdapter);
         binding.confirmBookingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

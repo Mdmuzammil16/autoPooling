@@ -5,10 +5,9 @@
     android:background="@color/white"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingHorizontal="20dp"
+    android:padding="20dp"
     tools:context=".SignUpActivity">
     <LinearLayout
-        android:padding="20dp"
         android:layout_marginVertical="10dp"
         android:layout_width="match_parent"
         android:orientation="horizontal"
@@ -50,6 +49,7 @@
         android:hint="Enter Name"
         android:background="@drawable/edit_text_bg"
         android:padding="10dp"
+        android:textColorHint="@color/gray"
         android:textSize="14sp"
         android:id="@+id/nameEdtTxt"
         android:textColor="@color/black" />
@@ -59,6 +59,7 @@
         android:layout_height="50dp"
         android:fontFamily="@font/montserratsemibold"
         android:hint="Enter Email"
+        android:textColorHint="@color/gray"
         android:background="@drawable/edit_text_bg"
         android:padding="10dp"
         android:textSize="14sp"
@@ -70,6 +71,7 @@
         android:fontFamily="@font/montserratsemibold"
         android:hint="Enter Password"
         android:textSize="14sp"
+        android:textColorHint="@color/gray"
         android:background="@drawable/edit_text_bg"
         android:padding="10dp"
         android:id="@+id/passwordEdtTxt"

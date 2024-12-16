@@ -5,16 +5,16 @@ import java.util.Date;
 
 public class PoolingResponseModel {
 
-    public PoolingResponseModel(String docId,String poolingId,String userName,String userEmail,String userImage,String imageUrl,Double price,String driverName,String driverId,String rating, Date date, String leavingFrom, String goingTo,ArrayList<Double> bookedSeats) {
+    public PoolingResponseModel(String docId,String poolingId,String userName,String userEmail,String userImage,String imageUrl,String driverName,String driverId,Double price,String rating, Date date, String leavingFrom, String goingTo,ArrayList<Double> bookedSeats) {
         this.docId = docId;
         this.poolingId = poolingId;
         this.userName = userName;
         this.userEmail =userEmail;
         this.userImage = userImage;
         this.imageUrl = imageUrl;
-        this.price = price;
         this.driverName = driverName;
         this.driverId = driverId;
+        this.price = price;
         this.rating = rating;
         this.date = date;
         this.leavingFrom = leavingFrom;

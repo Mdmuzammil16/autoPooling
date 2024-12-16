@@ -71,6 +71,36 @@ public class ProfilePageFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        db.collection("users").document("" + mAuth.getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    boolean isDriver = Boolean.TRUE.equals(documentSnapshot.getBoolean("driver"));
+                    if(isDriver){
+                        binding.driverPoolingsBtn.setVisibility(View.VISIBLE);
+                        driver = true;
+                        Map<String, Object> details = (Map<String, Object>) documentSnapshot.get("details");
+                        if (details != null) {
+                            documentUrl = ((String) details.get("documentUrl")); // Firestore stores numbers as Long
+                            numberPlate = (String) details.get("numberPlate");
+                        }
+                        binding.registerBtnTxt.setText("Update Driver Details");
+                    }
+                    else{
+                        binding.driverPoolingsBtn.setVisibility(View.GONE);
+                        driver = false;
+                        binding.registerBtnTxt.setText("Register As Driver");
+                    }
+                } else {
+                    Toast.makeText(requireContext(),"User Not Exisit",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         binding.nameTxt.setText(mAuth.getCurrentUser().getDisplayName());
@@ -82,31 +112,7 @@ public class ProfilePageFragment extends Fragment {
                 .into(binding.userImage);
 
         binding.registerBtnTxt.setText("Register As Driver");
-        db.collection("users").document("" + mAuth.getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            boolean isDriver = Boolean.TRUE.equals(documentSnapshot.getBoolean("driver"));
-                            if(isDriver){
-                                binding.driverPoolingsBtn.setVisibility(View.VISIBLE);
-                                driver = true;
-                                Map<String, Object> details = (Map<String, Object>) documentSnapshot.get("details");
-                                if (details != null) {
-                                    documentUrl = ((String) details.get("documentUrl")); // Firestore stores numbers as Long
-                                     numberPlate = (String) details.get("numberPlate");
-                                }
-                                binding.registerBtnTxt.setText("Update Driver Details");
-                            }
-                            else{
-                                binding.driverPoolingsBtn.setVisibility(View.GONE);
-                                driver = false;
-                                binding.registerBtnTxt.setText("Register As Driver");
-                            }
-                        } else {
-                          Toast.makeText(requireContext(),"User Not Exisit",Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+
         binding.registerAsDriverBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

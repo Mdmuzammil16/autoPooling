@@ -71,10 +71,11 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:paddingHorizontal="10dp"
-        android:hint="TG xx xxxx"
+        android:hint="Eg. TG-07-HG-xxxx"
+        android:fontFamily="@font/montserratsemibold"
         android:id="@+id/numberPlateTxt"
         android:textColorHint="@color/gray"
-        android:background="@drawable/white_bg"
+        android:background="@drawable/edit_text_bg"
         android:textColor="@color/black"/>
     <FrameLayout
         android:layout_width="match_parent"

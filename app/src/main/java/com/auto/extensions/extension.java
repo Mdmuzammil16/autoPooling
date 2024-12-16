@@ -30,6 +30,11 @@ public class extension {
         return dateTimeFormat.format(date);
     }
 
+    public static String getDate(Date date) {
+        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd-MM-yyyy"); // Customize format as needed
+        return dateTimeFormat.format(date);
+    }
+
     public static String getImageUrl() {
         Random random = new Random();
         return "https://api.dicebear.com/9.x/avataaars/png?seed="+(random.nextInt(100));
@@ -42,4 +47,10 @@ public class extension {
         Random random = new Random();
         return names.get(random.nextInt(names.size())) +" "+lastNames.get(random.nextInt(lastNames.size()));
     }
+
+    public static boolean validateNumberPlate(String plate) {
+        String regex = "^[A-Z]{2}-[0-9]{2}-[A-Z]{1,2}-[0-9]{4}$"; // Adjust based on your format
+        return plate.matches(regex);
+    }
+
 }
