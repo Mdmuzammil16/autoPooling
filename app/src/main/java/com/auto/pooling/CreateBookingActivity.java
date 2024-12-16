@@ -198,6 +198,7 @@ public class CreateBookingActivity extends AppCompatActivity {
                                                 jsonBody.put("description", "A New Ride Is Booked By "+mAuth.getCurrentUser().getDisplayName());
                                                 confirmBtn(url1, jsonBody);
                                                 jsonBody2.put("userId",mAuth.getCurrentUser().getUid());
+                                                jsonBody.put("duration",poolingData.getDate());
                                                 jsonBody2.put("bookingId",documentReference.getId());
                                                 confirmBtn(url2, jsonBody2);
                                             } catch (JSONException e) {
