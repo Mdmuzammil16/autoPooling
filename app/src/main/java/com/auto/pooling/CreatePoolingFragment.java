@@ -94,6 +94,7 @@ public class CreatePoolingFragment extends Fragment {
                 .addOnFailureListener(e -> {
                     Toast.makeText(requireContext(), "failed" + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
+        _binding.priceEditTxt.setText("");
     }
 
     @Override

@@ -62,7 +62,7 @@ public class DriverPoolingsActivity extends AppCompatActivity {
         binding.progressBar.setVisibility(View.VISIBLE);
         binding.poolingListView.setVisibility(View.GONE);
         newArrayList.clear();
-        db.collection("poolings").whereEqualTo("uid",mAuth.getCurrentUser().getUid()).orderBy("timestamp", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("poolings").whereEqualTo("driverId",mAuth.getCurrentUser().getUid()).orderBy("timestamp", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {

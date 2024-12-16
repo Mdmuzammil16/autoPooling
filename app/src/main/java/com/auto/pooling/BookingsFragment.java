@@ -49,13 +49,18 @@ public class BookingsFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        fetchData();
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         poolingDataAdapter = new PoolingDataAdapter(requireContext(),false,false,new ArrayList<>(), onlongClick -> {
 
         });
         binding.bookingListView.setAdapter(poolingDataAdapter);
-        fetchData();
     }
 
     private void fetchData() {
