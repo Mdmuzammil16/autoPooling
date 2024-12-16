@@ -63,8 +63,8 @@ public class SearchPageActivity extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        String passengers = intent.getStringExtra("passenger");
-        fetchData(leavingFrom,goingTo,receivedDate,Double.valueOf(passengers));
+        double passengers = intent.getDoubleExtra("passenger",1.0);
+        fetchData(leavingFrom,goingTo,receivedDate,passengers);
     }
 
     private void fetchData(String leavingFrom,String goingTo,Date receivedDate,Double passengers) {
@@ -96,6 +96,7 @@ public class SearchPageActivity extends AppCompatActivity {
                     binding.progressBar.setVisibility(View.GONE);
                     binding.poolingListView.setVisibility(View.VISIBLE);
                     ArrayList<PoolingResponseModel> newArrayList = new ArrayList<>();
+
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         String poolingId = document.getId();
                         String driverName = document.getString("driverName");
@@ -106,10 +107,11 @@ public class SearchPageActivity extends AppCompatActivity {
                         String leavingFrom = document.getString("leavingFrom");
                         String goingTo = document.getString("goingTo");
                         ArrayList<Double> bookedSeats = (ArrayList<Double>) document.get("bookedSeats");
-                        PoolingResponseModel poolingModel = new PoolingResponseModel(poolingId,poolingId,"","","",imageUrl,driverName,driverId,price,"",date,leavingFrom,goingTo,bookedSeats);
-                        if((3-bookedSeats.size()) >= passengers){
+                        PoolingResponseModel poolingModel = new PoolingResponseModel(poolingId,poolingId,"","","",imageUrl,driverName,driverId,price,"",date,leavingFrom,goingTo,bookedSeats,false);
+                        if(3-bookedSeats.size() >= (passengers.intValue())){
                             newArrayList.add(poolingModel);
                         }
+
                     }
                     if(newArrayList.size() == 0){
                         binding.poolingListView.setVisibility(View.GONE);

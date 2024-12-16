@@ -70,6 +70,7 @@ public class CreateBookingActivity extends AppCompatActivity {
         List<Double> bookedSeats = poolingData.getBookedSeats();
 
         if(fromHome){
+            binding.canceledView.setVisibility(View.GONE);
             db.collection("poolings").document(poolingData.getDocId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot document) {
@@ -82,7 +83,7 @@ public class CreateBookingActivity extends AppCompatActivity {
                     String leavingFrom = document.getString("leavingFrom");
                     String goingTo = document.getString("goingTo");
                     ArrayList<Double> bookedSeats = (ArrayList<Double>) document.get("bookedSeats");
-                    poolingData = new PoolingResponseModel(poolingId,poolingId,"","","",imageUrl,driverName,driverId,price,"",date,leavingFrom,goingTo,bookedSeats);
+                    poolingData = new PoolingResponseModel(poolingId,poolingId,"","","",imageUrl,driverName,driverId,price,"",date,leavingFrom,goingTo,bookedSeats,false);
                     list.clear();
                     list.add(new SeatDataModel(bookedSeats.contains(1.0),false,"1"));
                     list.add(new SeatDataModel(bookedSeats.contains(2.0),false,"2"));
@@ -103,6 +104,14 @@ public class CreateBookingActivity extends AppCompatActivity {
             binding.userDetailsView.setVisibility(View.VISIBLE);
             binding.cancelBookingView.setVisibility(View.VISIBLE);
             binding.confirmButtonView.setVisibility(View.GONE);
+            if(poolingData.isCanceled()){
+                binding.canceledView.setVisibility(View.VISIBLE);
+                binding.cancelBookingView.setVisibility(View.GONE);
+            }
+            else{
+                binding.canceledView.setVisibility(View.GONE);
+                binding.cancelBookingView.setVisibility(View.VISIBLE);
+            }
             String userImageUrl = "https://api.dicebear.com/9.x/avataaars/png?seed="+position;
             if(poolingData.getImageUrl() !=null){
                 userImageUrl = poolingData.getUserImage();
@@ -242,7 +251,7 @@ public class CreateBookingActivity extends AppCompatActivity {
 
                 DocumentReference poolingDocRef = db.collection("poolings").document(poolingData.getPoolingId());
 
-                batch.update(poolingDocRef, "bookedSeats", FieldValue.arrayRemove(new ArrayList<>(bookedSeats)));
+                batch.update(poolingDocRef, "bookedSeats", FieldValue.arrayRemove(bookedSeats.toArray()));
 
                 batch.commit().addOnSuccessListener(aVoid -> {
                     binding.cancelProgressBar.setVisibility(View.GONE);

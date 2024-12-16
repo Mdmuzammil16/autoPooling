@@ -174,11 +174,12 @@ public class HomePageFragment extends Fragment {
                     return;
                 }
                 Intent intent = new Intent(requireContext(),SearchPageActivity.class);
-                intent.putExtra("leavingFrom",binding.leavingFromTxt.getText().toString());
-                intent.putExtra("goingTo",binding.goingToTxt.getText().toString());
+                intent.putExtra("leavingFrom",binding.leavingFromTxt.getText().toString().trim());
+                intent.putExtra("goingTo",binding.goingToTxt.getText().toString().trim());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
                 intent.putExtra("date",sdf.format(selectedDate));
-                intent.putExtra("passenger",String.valueOf(binding.spinner.getSelectedItemPosition() + 1));
+                double passengar = (binding.spinner.getSelectedItemPosition() + 1);
+                intent.putExtra("passenger",passengar);
                 startActivity(intent);
             }
         });
@@ -212,7 +213,7 @@ public class HomePageFragment extends Fragment {
                         String leavingFrom = document.getString("leavingFrom");
                         String goingTo = document.getString("goingTo");
                         ArrayList<Double> bookedSeats = (ArrayList<Double>) document.get("bookedSeats");
-                        PoolingResponseModel poolingModel = new PoolingResponseModel(poolingId,poolingId,"","","",imageUrl,driverName,driverId,price,"",date,leavingFrom,goingTo,bookedSeats);
+                        PoolingResponseModel poolingModel = new PoolingResponseModel(poolingId,poolingId,"","","",imageUrl,driverName,driverId,price,"",date,leavingFrom,goingTo,bookedSeats,false);
                         newArrayList.add(poolingModel);
                     }
                     poolingDataAdapter.newData(newArrayList);

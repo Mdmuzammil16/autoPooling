@@ -86,8 +86,14 @@ public class BookingsFragment extends Fragment {
                         Date date = document.getDate("date");
                         String leavingFrom = document.getString("leavingFrom");
                         String goingTo = document.getString("goingTo");
+                        boolean canceled = false;
+                        if(document.getBoolean("canceled") != null) {
+                            canceled = document.getBoolean("canceled");
+                        }else{
+                            canceled = false;
+                        };
                         ArrayList<Double> bookedSeats = (ArrayList<Double>) document.get("seats");
-                        PoolingResponseModel poolingModel = new PoolingResponseModel(docId,poolingId,userName,userEmail,userImage,imageUrl,driverName,driverId,price,"",date,leavingFrom,goingTo,bookedSeats);
+                        PoolingResponseModel poolingModel = new PoolingResponseModel(docId,poolingId,userName,userEmail,userImage,imageUrl,driverName,driverId,price,"",date,leavingFrom,goingTo,bookedSeats,canceled);
                         newArrayList.add(poolingModel);
                     }
                     poolingDataAdapter.newData(newArrayList);

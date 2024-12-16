@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class PoolingResponseModel {
 
-    public PoolingResponseModel(String docId,String poolingId,String userName,String userEmail,String userImage,String imageUrl,String driverName,String driverId,Double price,String rating, Date date, String leavingFrom, String goingTo,ArrayList<Double> bookedSeats) {
+    public PoolingResponseModel(String docId,String poolingId,String userName,String userEmail,String userImage,String imageUrl,String driverName,String driverId,Double price,String rating, Date date, String leavingFrom, String goingTo,ArrayList<Double> bookedSeats,boolean canceled) {
         this.docId = docId;
         this.poolingId = poolingId;
         this.userName = userName;
@@ -20,7 +20,14 @@ public class PoolingResponseModel {
         this.leavingFrom = leavingFrom;
         this.goingTo = goingTo;
         this.bookedSeats = bookedSeats;
+        this.canceled = canceled;
     }
+
+    public boolean isCanceled() {
+        return canceled;
+    }
+
+    final boolean canceled;
 
     private final String docId;
 

@@ -37,12 +37,18 @@ public class PoolBookingsActivity extends AppCompatActivity {
     private PoolingDataAdapter poolingDataAdapter;
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        Intent i = getIntent();
+        String poolingId = i.getStringExtra("poolingId");
+        fetchData(poolingId);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityPoolBookingsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        Intent i = getIntent();
-        String poolingId = i.getStringExtra("poolingId");
 
         binding.backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,9 +60,8 @@ public class PoolBookingsActivity extends AppCompatActivity {
 
         });
         binding.bookingListView.setAdapter(poolingDataAdapter);
-        fetchData(poolingId);
-
     }
+
     private void fetchData(String poolingId) {
         binding.progressBar.setVisibility(View.VISIBLE);
         binding.bookingListView.setVisibility(View.GONE);
@@ -80,8 +85,14 @@ public class PoolBookingsActivity extends AppCompatActivity {
                         Date date = document.getDate("date");
                         String leavingFrom = document.getString("leavingFrom");
                         String goingTo = document.getString("goingTo");
+                        boolean canceled = false;
+                        if(document.getBoolean("canceled") != null) {
+                            canceled = document.getBoolean("canceled");
+                        }else{
+                            canceled = false;
+                        };
                         ArrayList<Double> bookedSeats = (ArrayList<Double>) document.get("seats");
-                        PoolingResponseModel poolingModel = new PoolingResponseModel(docId,poolingId,userName,userEmail,userImage,imageUrl,driverName,driverId,price,"",date,leavingFrom,goingTo,bookedSeats);
+                        PoolingResponseModel poolingModel = new PoolingResponseModel(docId,poolingId,userName,userEmail,userImage,imageUrl,driverName,driverId,price,"",date,leavingFrom,goingTo,bookedSeats,canceled);
                         newArrayList.add(poolingModel);
                     }
                     poolingDataAdapter.newData(newArrayList);

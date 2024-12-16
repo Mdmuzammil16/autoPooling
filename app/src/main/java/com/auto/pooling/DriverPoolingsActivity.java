@@ -78,7 +78,7 @@ public class DriverPoolingsActivity extends AppCompatActivity {
                         String leavingFrom = document.getString("leavingFrom");
                         String goingTo = document.getString("goingTo");
                         ArrayList<Double> bookedSeats = (ArrayList<Double>) document.get("bookedSeats");
-                        PoolingResponseModel poolingModel = new PoolingResponseModel(docId,docId,"","","",imageUrl,driverName,driverId,price,"",date,leavingFrom,goingTo,bookedSeats);
+                        PoolingResponseModel poolingModel = new PoolingResponseModel(docId,docId,"","","",imageUrl,driverName,driverId,price,"",date,leavingFrom,goingTo,bookedSeats,false);
                         newArrayList.add(poolingModel);
                     }
                     poolingDataAdapter.newData(newArrayList);
