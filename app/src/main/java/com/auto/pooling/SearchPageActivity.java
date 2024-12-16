@@ -63,34 +63,40 @@ public class SearchPageActivity extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        String passengers = intent.getStringExtra("passenger");
-        fetchData(leavingFrom,goingTo,receivedDate,Double.valueOf(passengers));
+        double passengers = intent.getDoubleExtra("passenger",1.0);
+        fetchData(leavingFrom,goingTo,receivedDate,passengers);
     }
 
     private void fetchData(String leavingFrom,String goingTo,Date receivedDate,Double passengers) {
         binding.progressBar.setVisibility(View.VISIBLE);
         binding.poolingListView.setVisibility(View.GONE);
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
 
-        Date startOfToday = calendar.getTime();
+        Calendar calendarStart = Calendar.getInstance();
+        calendarStart.setTime(receivedDate);
+        calendarStart.set(Calendar.HOUR_OF_DAY, 0);
+        calendarStart.set(Calendar.MINUTE, 0);
+        calendarStart.set(Calendar.SECOND, 0);
+        calendarStart.set(Calendar.MILLISECOND, 0);
+        Date startDate = calendarStart.getTime();
 
-        Log.d("Recived Value",leavingFrom);
-        Log.d("Recived Value",goingTo);
-        Log.d("Recived Value",String.valueOf(receivedDate));
-        Log.d("Recived Value",String.valueOf(startOfToday));
-        Log.d("Recived Value",String.valueOf(passengers));
+        // End of the day (23:59:59.999)
+        Calendar calendarEnd = Calendar.getInstance();
+        calendarEnd.setTime(receivedDate);
+        calendarEnd.set(Calendar.HOUR_OF_DAY, 23);
+        calendarEnd.set(Calendar.MINUTE, 59);
+        calendarEnd.set(Calendar.SECOND, 59);
+        calendarEnd.set(Calendar.MILLISECOND, 999);
+        Date endDate = calendarEnd.getTime();
 
-        db.collection("poolings").whereEqualTo("leavingFrom",leavingFrom.trim()).whereEqualTo("goingTo", goingTo.trim()).whereGreaterThanOrEqualTo("date",startOfToday).orderBy("date", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+        db.collection("poolings").whereEqualTo("leavingFrom",leavingFrom.trim()).whereEqualTo("goingTo", goingTo.trim()).whereGreaterThanOrEqualTo("date",startDate).whereLessThanOrEqualTo("date",endDate).orderBy("date", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     binding.progressBar.setVisibility(View.GONE);
                     binding.poolingListView.setVisibility(View.VISIBLE);
                     ArrayList<PoolingResponseModel> newArrayList = new ArrayList<>();
+
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         String poolingId = document.getId();
                         String driverName = document.getString("driverName");
@@ -101,10 +107,11 @@ public class SearchPageActivity extends AppCompatActivity {
                         String leavingFrom = document.getString("leavingFrom");
                         String goingTo = document.getString("goingTo");
                         ArrayList<Double> bookedSeats = (ArrayList<Double>) document.get("bookedSeats");
-                        PoolingResponseModel poolingModel = new PoolingResponseModel(poolingId,poolingId,"","","",imageUrl,driverName,driverId,price,"",date,leavingFrom,goingTo,bookedSeats);
-                        if((3-bookedSeats.size()) >= passengers){
+                        PoolingResponseModel poolingModel = new PoolingResponseModel(poolingId,poolingId,"","","",imageUrl,driverName,driverId,price,"",date,leavingFrom,goingTo,bookedSeats,false);
+                        if(3-bookedSeats.size() >= (passengers.intValue())){
                             newArrayList.add(poolingModel);
                         }
+
                     }
                     if(newArrayList.size() == 0){
                         binding.poolingListView.setVisibility(View.GONE);

@@ -62,7 +62,7 @@ public class DriverPoolingsActivity extends AppCompatActivity {
         binding.progressBar.setVisibility(View.VISIBLE);
         binding.poolingListView.setVisibility(View.GONE);
         newArrayList.clear();
-        db.collection("poolings").whereEqualTo("uid",mAuth.getCurrentUser().getUid()).orderBy("timestamp", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("poolings").whereEqualTo("driverId",mAuth.getCurrentUser().getUid()).orderBy("timestamp", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -73,13 +73,12 @@ public class DriverPoolingsActivity extends AppCompatActivity {
                         String driverName = document.getString("driverName");
                         String driverId = document.getString("driverId");
                         String imageUrl = document.getString("imageUrl");
-                        String rating = document.getString("rating");
                         Date date = document.getDate("date");
                         Double price = document.getDouble("price");
                         String leavingFrom = document.getString("leavingFrom");
                         String goingTo = document.getString("goingTo");
                         ArrayList<Double> bookedSeats = (ArrayList<Double>) document.get("bookedSeats");
-                        PoolingResponseModel poolingModel = new PoolingResponseModel(docId,docId,"","","",imageUrl,driverName,driverId,price,rating,date,leavingFrom,goingTo,bookedSeats);
+                        PoolingResponseModel poolingModel = new PoolingResponseModel(docId,docId,"","","",imageUrl,driverName,driverId,price,"",date,leavingFrom,goingTo,bookedSeats,false);
                         newArrayList.add(poolingModel);
                     }
                     poolingDataAdapter.newData(newArrayList);

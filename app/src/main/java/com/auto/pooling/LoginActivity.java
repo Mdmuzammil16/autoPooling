@@ -153,9 +153,12 @@ public class LoginActivity extends AppCompatActivity {
                                     users.put("uid", user.getUid());
                                     users.put("name", user.getDisplayName());
                                     users.put("email", user.getEmail());
-                                    users.put("driver", false);
+                                    boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
+                                    if (isNewUser) {
+                                        users.put("driver", false);
+                                    }
 
-                                    db.collection("users").document(user.getUid()).set(users)
+                                    db.collection("users").document(user.getUid()).set(users,SetOptions.merge())
                                             .addOnSuccessListener(a -> {
                                                 pd.setVisibility(View.GONE);
                                                 binding.googleBtn.setVisibility(View.VISIBLE);

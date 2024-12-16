@@ -138,7 +138,6 @@ public class ProfilePageFragment extends Fragment {
                         else{
                             binding.progressBar.setVisibility(View.GONE);
                             binding.userImage.setVisibility(View.VISIBLE);
-                            Toast.makeText(requireContext(),"wxsn",Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

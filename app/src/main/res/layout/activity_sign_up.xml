@@ -81,7 +81,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ProgressBar
-            android:id="@+id/progressBar"
+            android:id="@+id/signUpProgressBar"
             android:indeterminateTint="@color/primary"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -96,5 +96,70 @@
             android:backgroundTint="@color/primary"
             android:text="Sign Up"/>
     </FrameLayout>
+    <LinearLayout
+        android:layout_marginVertical="20dp"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_height="wrap_content">
+        <View
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/white_bg"
+            android:backgroundTint="@color/gray"/>
+        <TextView
+            android:layout_marginHorizontal="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/montserratbold"
+            android:text="Or"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
+        <View
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:background="@drawable/white_bg"
+            android:backgroundTint="@color/gray"/>
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:id="@+id/googleBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/google_bg"
+        android:backgroundTint="@color/primary"
+        android:gravity="center"
+        android:padding="12dp">
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/google" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:fontFamily="@font/montserratsemibold"
+            android:text="Sign in with Google"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+
+    <ProgressBar
+        android:indeterminateTint="@color/primary"
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:visibility="gone" />
 
 </LinearLayout>

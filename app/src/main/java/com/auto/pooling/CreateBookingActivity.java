@@ -29,6 +29,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -65,53 +66,66 @@ public class CreateBookingActivity extends AppCompatActivity {
         String position = intent.getStringExtra("position");
         boolean fromHome = intent.getBooleanExtra("fromHome",true);
          poolingData = gson.fromJson(poolingModel, PoolingResponseModel.class);
+        ArrayList<SeatDataModel> list = new ArrayList<>();
+        List<Double> bookedSeats = poolingData.getBookedSeats();
 
-        db.collection("poolings").document(poolingData.getDocId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot document) {
-                String poolingId = document.getId();
-                String driverName = document.getString("driverName");
-                String driverId = document.getString("driverId");
-                String imageUrl = document.getString("imageUrl");
-                String rating = document.getString("rating");
-                Date date = document.getDate("date");
-                Double price = document.getDouble("price");
-                String leavingFrom = document.getString("leavingFrom");
-                String goingTo = document.getString("goingTo");
-                ArrayList<Double> bookedSeats = (ArrayList<Double>) document.get("bookedSeats");
-                poolingData = new PoolingResponseModel(poolingId,poolingId,"","","",imageUrl,driverName,driverId,price,rating,date,leavingFrom,goingTo,bookedSeats);
-                ArrayList<SeatDataModel> list = new ArrayList<>();
-                if(fromHome){
+        if(fromHome){
+            binding.canceledView.setVisibility(View.GONE);
+            db.collection("poolings").document(poolingData.getDocId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot document) {
+                    String poolingId = document.getId();
+                    String driverName = document.getString("driverName");
+                    String driverId = document.getString("driverId");
+                    String imageUrl = document.getString("imageUrl");
+                    Date date = document.getDate("date");
+                    Double price = document.getDouble("price");
+                    String leavingFrom = document.getString("leavingFrom");
+                    String goingTo = document.getString("goingTo");
+                    ArrayList<Double> bookedSeats = (ArrayList<Double>) document.get("bookedSeats");
+                    poolingData = new PoolingResponseModel(poolingId,poolingId,"","","",imageUrl,driverName,driverId,price,"",date,leavingFrom,goingTo,bookedSeats,false);
                     list.clear();
                     list.add(new SeatDataModel(bookedSeats.contains(1.0),false,"1"));
                     list.add(new SeatDataModel(bookedSeats.contains(2.0),false,"2"));
                     list.add(new SeatDataModel(bookedSeats.contains(3.0),false,"3"));
                     binding.userDetailsView.setVisibility(View.GONE);
+                    binding.cancelBookingView.setVisibility(View.GONE);
                     binding.confirmButtonView.setVisibility(View.VISIBLE);
-
+                    selectingSeatAdapter = new SelectingSeatAdapter(CreateBookingActivity.this,list,onlongClick ->{});
+                    binding.seatRecyclerList.setAdapter(selectingSeatAdapter);
                 }
-                else{
-                    list.clear();
-                    bookedSeats.forEach((seatNumber) -> {
-                        list.add(new SeatDataModel(true, false, String.valueOf(((Number) seatNumber).intValue())));
-                    });
-                    binding.userDetailsView.setVisibility(View.VISIBLE);
-                    binding.confirmButtonView.setVisibility(View.GONE);
-                    String userImageUrl = "https://api.dicebear.com/9.x/avataaars/png?seed="+position;
-                    if(poolingData.getImageUrl() !=null){
-                        userImageUrl = poolingData.getUserImage();
-                    }
-                    Glide.with(CreateBookingActivity.this)
-                            .load(userImageUrl) // Load the profile image URL
-                            .placeholder(R.drawable.example_image) // Optional placeholder while loading
-                            .error(R.drawable.example_image) // Optional error image if loading fails
-                            .into(binding.userImage);
-                    binding.userName.setText(poolingData.getUserName());
-                }
-                selectingSeatAdapter = new SelectingSeatAdapter(CreateBookingActivity.this,list,onlongClick ->{});
-                binding.seatRecyclerList.setAdapter(selectingSeatAdapter);
+            });
+         }
+        else{
+            list.clear();
+            bookedSeats.forEach((seatNumber) -> {
+                list.add(new SeatDataModel(true, false, String.valueOf(((Number) seatNumber).intValue())));
+            });
+            binding.userDetailsView.setVisibility(View.VISIBLE);
+            binding.cancelBookingView.setVisibility(View.VISIBLE);
+            binding.confirmButtonView.setVisibility(View.GONE);
+            if(poolingData.isCanceled()){
+                binding.canceledView.setVisibility(View.VISIBLE);
+                binding.cancelBookingView.setVisibility(View.GONE);
             }
-        });
+            else{
+                binding.canceledView.setVisibility(View.GONE);
+                binding.cancelBookingView.setVisibility(View.VISIBLE);
+            }
+            String userImageUrl = "https://api.dicebear.com/9.x/avataaars/png?seed="+position;
+            if(poolingData.getImageUrl() !=null){
+                userImageUrl = poolingData.getUserImage();
+            }
+            Glide.with(CreateBookingActivity.this)
+                    .load(userImageUrl) // Load the profile image URL
+                    .placeholder(R.drawable.example_image) // Optional placeholder while loading
+                    .error(R.drawable.example_image) // Optional error image if loading fails
+                    .into(binding.userImage);
+            binding.userName.setText(poolingData.getUserName());
+            selectingSeatAdapter = new SelectingSeatAdapter(CreateBookingActivity.this,list,onlongClick ->{});
+            binding.seatRecyclerList.setAdapter(selectingSeatAdapter);
+        }
+
 
         String imageUrl = "https://api.dicebear.com/9.x/avataaars/png?seed="+position;
         if(poolingData.getImageUrl() !=null){
@@ -122,8 +136,6 @@ public class CreateBookingActivity extends AppCompatActivity {
                 .placeholder(R.drawable.example_image) // Optional placeholder while loading
                 .error(R.drawable.example_image) // Optional error image if loading fails
                 .into(binding.autoDriverImage);
-
-        List<Double> bookedSeats = poolingData.getBookedSeats();
 
 
         binding.backBtn.setOnClickListener(new View.OnClickListener() {
@@ -169,7 +181,6 @@ public class CreateBookingActivity extends AppCompatActivity {
                 orderData.put("imageUrl", poolingData.getImageUrl());
                 orderData.put("driverName", poolingData.getDriverName());
                 orderData.put("driverId", poolingData.getDriverId());
-                orderData.put("rating", "3.0");
                 orderData.put("date", poolingData.getDate());
                 orderData.put("leavingFrom", poolingData.getLeavingFrom());
                 orderData.put("goingTo", poolingData.getGoingTo());
@@ -196,6 +207,7 @@ public class CreateBookingActivity extends AppCompatActivity {
                                                 jsonBody.put("description", "A New Ride Is Booked By "+mAuth.getCurrentUser().getDisplayName());
                                                 confirmBtn(url1, jsonBody);
                                                 jsonBody2.put("userId",mAuth.getCurrentUser().getUid());
+                                                jsonBody.put("duration",poolingData.getDate());
                                                 jsonBody2.put("bookingId",documentReference.getId());
                                                 confirmBtn(url2, jsonBody2);
                                             } catch (JSONException e) {
@@ -224,6 +236,34 @@ public class CreateBookingActivity extends AppCompatActivity {
                                 Toast.makeText(CreateBookingActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
                             }
                         });
+            }
+        });
+        binding.cancelBookingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.cancelProgressBar.setVisibility(View.VISIBLE);
+                binding.cancelBookingBtn.setVisibility(View.GONE);
+                WriteBatch batch = db.batch();
+
+                DocumentReference orderDocRef = db.collection("orders").document(poolingData.getDocId());
+
+                batch.update(orderDocRef, "canceled", true);
+
+                DocumentReference poolingDocRef = db.collection("poolings").document(poolingData.getPoolingId());
+
+                batch.update(poolingDocRef, "bookedSeats", FieldValue.arrayRemove(bookedSeats.toArray()));
+
+                batch.commit().addOnSuccessListener(aVoid -> {
+                    binding.cancelProgressBar.setVisibility(View.GONE);
+                    binding.cancelBookingBtn.setVisibility(View.VISIBLE);
+                    Toast.makeText(CreateBookingActivity.this,"Booking Canceled Successfully",Toast.LENGTH_SHORT).show();
+                    finish();
+                }).addOnFailureListener(e -> {
+                    binding.cancelProgressBar.setVisibility(View.GONE);
+                    binding.cancelBookingBtn.setVisibility(View.VISIBLE);
+                    Toast.makeText(CreateBookingActivity.this,"Error "+e,Toast.LENGTH_SHORT).show();
+                    Log.d("Batch update failed: ", e.getMessage());
+                });
             }
         });
     }

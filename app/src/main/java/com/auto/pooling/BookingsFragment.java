@@ -49,13 +49,18 @@ public class BookingsFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        fetchData();
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         poolingDataAdapter = new PoolingDataAdapter(requireContext(),false,false,new ArrayList<>(), onlongClick -> {
 
         });
         binding.bookingListView.setAdapter(poolingDataAdapter);
-        fetchData();
     }
 
     private void fetchData() {
@@ -78,12 +83,17 @@ public class BookingsFragment extends Fragment {
                         String driverId = document.getString("driverId");
                         String imageUrl = document.getString("imageUrl");
                         Double price = document.getDouble("price");
-                        String rating = document.getString("rating");
                         Date date = document.getDate("date");
                         String leavingFrom = document.getString("leavingFrom");
                         String goingTo = document.getString("goingTo");
+                        boolean canceled = false;
+                        if(document.getBoolean("canceled") != null) {
+                            canceled = document.getBoolean("canceled");
+                        }else{
+                            canceled = false;
+                        };
                         ArrayList<Double> bookedSeats = (ArrayList<Double>) document.get("seats");
-                        PoolingResponseModel poolingModel = new PoolingResponseModel(docId,poolingId,userName,userEmail,userImage,imageUrl,driverName,driverId,price,rating,date,leavingFrom,goingTo,bookedSeats);
+                        PoolingResponseModel poolingModel = new PoolingResponseModel(docId,poolingId,userName,userEmail,userImage,imageUrl,driverName,driverId,price,"",date,leavingFrom,goingTo,bookedSeats,canceled);
                         newArrayList.add(poolingModel);
                     }
                     poolingDataAdapter.newData(newArrayList);

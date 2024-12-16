@@ -97,6 +97,12 @@ public class PoolingDataAdapter extends RecyclerView.Adapter<PoolingDataAdapter.
         holder.binding.priceTxt.setText("₹"+poolingData.getPrice());
         holder.binding.startTime.setText(getTimeFromDate(poolingData.getDate()));
         holder.binding.endTime.setText(getDateTimeWithExtraHour(poolingData.getDate()));
+        if(poolingData.isCanceled()){
+            holder.binding.canceledView.setVisibility(View.VISIBLE);
+        }
+        else{
+            holder.binding.canceledView.setVisibility(View.GONE);
+        }
         String imageUrl = "https://api.dicebear.com/9.x/avataaars/png?seed="+position;
         if(poolingData.getImageUrl() !=null){
             imageUrl = poolingData.getImageUrl();
